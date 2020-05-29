@@ -48,7 +48,7 @@ class ResetWatched:
             updateDialog.update(uIndex, message='Exiting - Resetting Watched Status')
             
             filepath = CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'
-            index = self.load(filepath,watchedList)
+            index = self.load(filepath,watchedList,channel)
             channel = channel +1
         updateDialog.close()
         
@@ -76,10 +76,12 @@ class ResetWatched:
         data = xbmc.executeJSONRPC(command)
         return unicode(data, 'utf-8', errors='ignore')
 
-    def load(self,filename,watchedList):
+    def load(self,filename,watchedList,channel):
         self.log("RESET CHANNEL " + filename)
         self.processingSemaphore.acquire()
         self.clear()
+        
+        chtype = ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_type')
         
         try:
             fle = FileAccess.open(filename, 'r')
@@ -117,10 +119,13 @@ class ResetWatched:
                         ID = int(ID)
                         
                         #if HideYearEpInfo is turned on, episodetitle will be blank for movies.  If it's off, episodetitle will contain an x (movies will have just a year)
+                        debug('chtype = ', chtype)
                         debug("ADDON.getSetting('HideYearEpInfo') = ", ADDON.getSetting('HideYearEpInfo'))
                         debug('episodetitle = ', episodetitle)
                         
-                        if ADDON.getSetting('HideYearEpInfo') == "true":
+                        if chtype == "6":
+                            asset = "episode"
+                        elif ADDON.getSetting('HideYearEpInfo') == "true":
                             if episodetitle:
                                 asset = "episode"
                             else:
@@ -147,8 +152,8 @@ class ResetWatched:
 
                             if 'error":{"code"' in json_folder_detail:
                                 self.log("JSON Error: " +  json_folder_detail, xbmc.LOGWARNING)
-                                assetMsg = "Possible Failure.  Check log."
-                                xbmc.executebuiltin("Notification(\"PseudoTV Reset\", \"%s\")" % assetMsg)
+                                #assetMsg = "Possible Failure.  Check log."
+                                #xbmc.executebuiltin("Notification(\"PseudoTV Reset\", \"%s\")" % assetMsg)
                                 self.log("Failed to reset Episode " + str(ID), xbmc.LOGWARNING)
                             
                             else:

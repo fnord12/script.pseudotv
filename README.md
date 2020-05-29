@@ -92,9 +92,8 @@ Replace *"Player.DisplayAfterSeek"* with
 ---
 ### Branches guide
 
-* **Master branch:** Suitable for Kodi VER:18 and above.
-* **Leia branch:** Suitable for Kodi VER:18.
-* **Krypton branch:** Suitable for Kodi VER:17 and below. 
+This version is tested in Kodi 18 Leia only.  It will not work in 19 at this time and updating for that is not high on my priority list.
+For older versions, see https://github.com/Steveb1968/script.pseudotv
 
 ---
 ### Credits
