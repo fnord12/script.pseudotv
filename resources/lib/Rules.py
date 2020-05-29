@@ -1177,7 +1177,7 @@ class PlayShowInOrder(BaseRule):
 
     def runAction(self, actionid, channelList, param):
         debug('runAction actionid = ', actionid)
-        debug('runAction start param = ', param)
+        self.log('runAction start param = ' + str(param))
         if actionid == RULES_ACTION_START:
             del self.showInfo[:]
 

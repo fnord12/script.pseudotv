@@ -156,7 +156,7 @@
 				<font>PseudoTv13</font>
 				<textcolor>AAFFFFFF</textcolor>
 				<shadowcolor>22000000</shadowcolor>
-				<autoscroll time="4000" delay="6000" repeat="6000">True</autoscroll>
+				<autoscroll time="2000" delay="1000" repeat="1000">True</autoscroll>
 			</control>
 			<control type="image" id="506">
 				<description>Show Channel Icon</description>
