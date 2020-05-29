@@ -32,7 +32,7 @@ Since Steveb has taken a break, i have been digging into the code, mainly trying
 
 * Directory Channel Episode Plot. For directory channels, instead of just displaying the file path as the episode plots, i've introduced some boiler plate text.  By default it's "Join [Channel Name] for "File Name]" but you can customize it by editing values 30193 & 30194 in your language's strings.po file.  Note that the spaces are part of the string so that if you don't want one, you can remove it, e.g. "It's [Channel Name]'s special showing of [File Name]".  Values can also be blank (i.e. if you want to start with the channel name, set the first one to "").  Let me know if anyone misses seeing the file path; i just felt it took you out of the experience.
 
-*Artist/Band name will now be listed for music videos.
+* Artist/Band name will now be listed for music videos.
 
 ### NEW SETTING PARAMETERS
 
