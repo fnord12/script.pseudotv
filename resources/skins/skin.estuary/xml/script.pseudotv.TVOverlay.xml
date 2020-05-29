@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="group" id="102">
+			<visible>Player.HasVideo + !Window.IsActive(videoosd) + ![Player.Seeking | Player.Paused | Player.Forwarding | Player.Rewinding | Player.IsTempo]</visible>
+			<!--HEADER-->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1920</width>
+				<height>80</height>
+				<texture border="2">ptv_InfoBar.png</texture>
+			</control>
+			<control type="image">
+				<left>13</left>
+				<top>10</top>
+				<width>60</width>
+				<height>60</height>
+				<texture colordiffuse="button_focus">ptv_logo.png</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>85</left>
+				<top>7</top>
+				<width>500</width>
+				<height>100</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>top</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>[B]$INFO[System.AddonTitle(script.pseudotv)][/B]</label>
+			</control>
+			<control type="label">
+				<left>85</left>
+				<top>42</top>
+				<width>500</width>
+				<height>60</height>
+				<font>font20_title</font>
+				<align>left</align>
+				<aligny>top</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>$INFO[System.AddonVersion(script.pseudotv),Ver: ,]</label>
+			</control>
+			<control type="image">
+				<left>1855</left>
+				<top>20</top>
+				<width>40</width>
+				<height>40</height>
+				<texture colordiffuse="button_focus">ptv_clock.png</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+				<control type="label">
+				<left>1340</left>
+				<top>7</top>
+				<width>500</width>
+				<height>100</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>top</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>[B]$INFO[System.Time][/B]</label>
+			</control>
+			<control type="label">
+				<left>1340</left>
+				<top>42</top>
+				<width>500</width>
+				<height>60</height>
+				<font>font20_title</font>
+				<align>right</align>
+				<aligny>top</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>$INFO[Player.FinishTime,$LOCALIZE[19081] $LOCALIZE[142] ,]</label>
+			</control>
+			<!--FOOTER-->
+			<control type="image">
+				<left>0</left>
+				<top>780</top>
+				<width>1920</width>
+				<height>300</height>
+				<texture flipy="true" border="2">ptv_InfoBar.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>560</top>
+				<width>1920</width>
+				<height>520</height>
+				<texture>ptv_LogoBack.png</texture>
+			</control>
+			<control type="image">
+				<top>715</top>
+				<width>253</width>
+				<height>372</height>
+				<texture>$INFO[Player.Art(tvshow.poster)]</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="20">ptv_thumb_shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>!String.IsEmpty(Player.Art(tvshow.poster))</visible>
+			</control>
+			<control type="image">
+				<top>715</top>
+				<width>253</width>
+				<height>372</height>
+				<texture>$INFO[Player.Art(poster)]</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="20">ptv_thumb_shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>String.IsEmpty(Player.Art(tvshow.poster)) + !String.IsEmpty(Player.Art(poster))</visible>
+			</control>
+			<control type="image">
+				<top>715</top>
+				<width>253</width>
+				<height>372</height>
+				<texture>DefaultVideo.png</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="20">ptv_thumb_shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>String.IsEmpty(Player.Art(tvshow.poster)) + String.IsEmpty(Player.Art(poster))</visible>
+			</control>
+			<control type="label" id="502">
+				<description>Heading label</description>
+				<left>252</left>
+				<top>795</top>
+				<width>300</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>orange</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="fadelabel">
+				<left>252</left>
+				<top>833</top>
+				<width>1475</width>
+				<height>40</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font32_title</font>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<scrollout>false</scrollout>
+				<pauseatend>1800</pauseatend>
+				<scrollspeed>40</scrollspeed>
+				<label>$INFO[Control.GetLabel(503)]$INFO[Control.GetLabel(504), [COLOR grey],[/COLOR]]</label>
+			</control>
+			<control type="textbox" id="505">
+				<description>Plot</description>
+				<left>252</left>
+				<top>883</top>
+				<width>1640</width>
+				<height>85</height>
+				<font>font13</font>
+				<textcolor>AAFFFFFF</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<autoscroll time="4000" delay="6000" repeat="6000">True</autoscroll>
+			</control>
+			<control type="image" id="506">
+				<description>Show Channel Icon</description>
+				<left>1740</left>
+				<top>795</top>
+				<width>150</width>
+				<height>80</height>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<!--MEDIA FLAGS-->
+			<control type="grouplist">
+				<right>24</right>
+				<top>960</top>
+				<width>770</width>
+				<height>90</height>
+				<align>right</align>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+				<itemgap>20</itemgap>
+				<control type="image">
+					<width>135</width>
+					<height>90</height>
+					<aspectratio>keep</aspectratio>
+					<bordersize>7</bordersize>
+					<texture colordiffuse="AAFFFFFF">$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]</texture>
+				</control>
+				<control type="image">
+					<width>135</width>
+					<height>90</height>
+					<aspectratio>keep</aspectratio>
+					<bordersize>7</bordersize>
+					<texture colordiffuse="AAFFFFFF">$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]</texture>
+				</control>
+				<control type="image">
+					<width>135</width>
+					<height>90</height>
+					<aspectratio>keep</aspectratio>
+					<bordersize>7</bordersize>
+					<texture colordiffuse="AAFFFFFF">$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]</texture>
+				</control>
+				<control type="image">
+					<width>135</width>
+					<height>90</height>
+					<aspectratio>keep</aspectratio>
+					<bordersize>7</bordersize>
+					<texture colordiffuse="AAFFFFFF">$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]</texture>
+				</control>
+				<control type="button">
+					<top>15</top>
+					<width>135</width>
+					<height>60</height>
+					<aspectratio>keep</aspectratio>
+					<texturefocus colordiffuse="AAFFFFFF" border="5">flags/flag.png</texturefocus>
+					<texturenofocus colordiffuse="AAFFFFFF" border="5">flags/flag.png</texturenofocus>
+					<font>font10</font>
+					<textcolor>AAFFFFFF</textcolor>
+					<label>[B]CC[/B]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<visible>VideoPlayer.HasSubtitles</visible>
+				</control>
+			</control>
+			<!--PROGRESS-->
+			<control type="label">
+				<left>252</left>
+				<top>985</top>
+				<width>500</width>
+				<height>40</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>AAFFFFFF</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>[B]$INFO[Player.Time]$INFO[Player.Duration, / ][/B]</label>
+			</control>
+			<control type="progress" id="23">
+				<left>252</left>
+				<top>1035</top>
+				<width>1640</width>
+				<height>30</height>
+				<texturebg colordiffuse="80FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+				<info>Player.Progress</info>
+			</control>
+			<control type="group">
+				<visible>false</visible>
+				<control type="label" id="503" />
+				<control type="label" id="504" />
+			</control>
+		</control>
+		<control type="image" id="103">
+			<description>Channel Bug</description>
+			<width>161</width>
+			<height>109</height>
+			<aspectratio>keep</aspectratio>
+			<visible>Player.HasVideo + ![Player.Seeking | Player.Paused | Player.Forwarding | Player.Rewinding | Player.IsTempo]</visible>
+			<animation effect="fade" end="20" condition="True">conditional</animation>
+		</control>
+	</controls>
+</window>
