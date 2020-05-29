@@ -1,6 +1,6 @@
 ![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/images/Default.png?raw=true "PseudoTV Logo")
 
-PseudoTV 2.5.0 update - fnord12 branch:
+PseudoTV 2.5.0 update - fnord12 branch
 ======
 
 Since Steveb has taken a break, i have been digging into the code, mainly trying to fix the known problem introduced in Kodi 17 and worsened in 18 where resuming a paused video results in the channel resetting.  So far i haven't been able to address that, but in digging through the code i've found where i coild make a number of other improvements and thought it merited a "release".
