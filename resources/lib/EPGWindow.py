@@ -46,6 +46,8 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.focusedcolor = "FF7d7d7d"
         self.clockMode = 0
         self.textfont  = "font13"
+        self.hideShortItems = ADDON.getSetting("HideClips") == "true"
+        self.shortItemLength = SHORT_CLIP_ENUM[int(ADDON.getSetting("ClipLength"))]
 
         # Set media path.
         if os.path.exists(xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media'))):
@@ -650,7 +652,11 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         starttime = self.shownTime + (left / (basew / 5400.0))
         chnoffset = self.focusRow - 2
         newchan = self.centerChannel
-
+        shouldskip = False
+        
+        self.log('newchan = ' + str(newchan))
+        self.log('chnoffset = ' + str(chnoffset))
+        
         while chnoffset != 0:
             if chnoffset > 0:
                 newchan = self.MyOverlayWindow.fixChannel(newchan + 1, True)
@@ -660,17 +666,25 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 chnoffset += 1
 
         plpos = self.determinePlaylistPosAtTime(starttime, newchan)
-
+        
         if plpos == -1:
             self.log('Unable to find the proper playlist to set from EPG')
             return
-
-        self.getControl(500).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemTitle(plpos))
-        self.getControl(501).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemEpisodeTitle(plpos))
-        self.getControl(502).setText(self.MyOverlayWindow.channels[newchan - 1].getItemDescription(plpos))
-        self.getControl(503).setImage(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png')
-        if not FileAccess.exists(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png'):
-            self.getControl(503).setImage(IMAGES_LOC + 'Default.png')
+                
+        if self.hideShortItems:
+            ItemDuration = self.MyOverlayWindow.channels[newchan - 1].getItemDuration(plpos)
+            if ItemDuration < self.shortItemLength:
+                shouldskip = True
+        
+        if shouldskip == False:       
+            self.getControl(500).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemTitle(plpos))
+            self.getControl(501).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemEpisodeTitle(plpos))
+            self.getControl(502).setText(self.MyOverlayWindow.channels[newchan - 1].getItemDescription(plpos))
+            self.getControl(503).setImage(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png')
+            if not FileAccess.exists(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png'):
+                self.getControl(503).setImage(IMAGES_LOC + 'Default.png')
+       
+        
         self.log('setShowInfo return')
 
 
@@ -707,8 +721,9 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         showoffset = self.MyOverlayWindow.channels[newchan - 1].showTimeOffset
 
         # adjust the show and time offsets to properly position inside the playlist
-        while showoffset + timedif > self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos):
-            timedif -= self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos) - showoffset
+        ItemDuration = self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos)
+        while showoffset + timedif > ItemDuration:
+            timedif -= ItemDuration - showoffset
             pos = self.MyOverlayWindow.channels[newchan - 1].fixPlaylistIndex(pos + 1)
             showoffset = 0
 
