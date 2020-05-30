@@ -1,3 +1,4 @@
 *.pyo
 *Thumbs.db
 .vscode
+SyncToy*.*

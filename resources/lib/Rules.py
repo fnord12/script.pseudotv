@@ -1186,7 +1186,6 @@ class PlayShowInOrder(BaseRule):
 
         if actionid == RULES_ACTION_LIST:
             return self.sortShows(channelList, param)
-        debug('runAction end param = ', param)
         return param
 
 
