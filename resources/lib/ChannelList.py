@@ -739,10 +739,13 @@ class ChannelList:
                 tmpstr = str(duration) + ','
                 
                 #tmpstr += afile + "//" + "//" + LANGUAGE(30049) + (' "{}"'.format(setting1)) + "\n"
-                Pathlist = setting1.split("\\")
-                ChannelName = Pathlist[-2]
-                tmpstr += afile + "//" + "//" + LANGUAGE(30193) + ChannelName + LANGUAGE(30194) + afile  + ".\n"
+                ChannelName = ''    
+                if setting1[-1] == '/' or setting1[-1] == '\\':
+                    ChannelName = os.path.split(setting1[:-1])[1]
                 
+                
+                tmpstr += afile + "//" + "//" + LANGUAGE(30193) + ChannelName + LANGUAGE(30194) + afile  + ".\n"
+                self.log('ChannelName = ' + str(ChannelName))
                 tmpstr += setting1 + os.path.basename(f)
                 tmpstr = uni(tmpstr[:2036])
                 fileList.append(tmpstr)
@@ -1127,8 +1130,6 @@ class ChannelList:
                             if showtitle != None and len(showtitle.group(1)) > 0:
                                 #swtitle is *episode* title, not showtitle.
                                 swtitle = title.group(1)
-                                self.log('swtitle = ' + swtitle)
-                                self.log('title.group(0) = ' + title.group(0))
                                 
                                 if "." in swtitle:
                                     param, swtitle = swtitle.split(". ", 1)

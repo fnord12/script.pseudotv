@@ -259,17 +259,17 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         try:
             if self.AlwaysUseStartChannel == True:
                 debug ('start channel should always be based on setting: ', str(self.StartChannel))
-                self.currentChannel = int(self.StartChannel)
+                self.currentChannel = self.fixChannel(int(self.StartChannel))
             else:
                 if self.forceReset == False and self.channelResetSetting is not "5":
                     debug ('start channel should be last remembered: ', int(ADDON.getSetting("CurrentChannel")))
-                    self.currentChannel = int(ADDON.getSetting("CurrentChannel"))
+                    self.currentChannel = self.fixChannel(int(ADDON.getSetting("CurrentChannel")))
                 else:
                     debug ('start channel should be based on setting due to channel reset: ', str(self.StartChannel))
-                    self.currentChannel = int(self.StartChannel)
+                    self.currentChannel = self.fixChannel(int(self.StartChannel))
         except:
             self.log('error, so defaulting to channel 1')
-            self.currentChannel = 1
+            self.currentChannel = self.fixChannel(1)
 
         self.resetChannelTimes()
         self.setChannel(self.currentChannel)
@@ -798,10 +798,11 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.infoTimer = threading.Timer(timer, self.hideInfo)
         self.infoTimer.name = "InfoTimer"
         
-        if xbmc.getCondVisibility('Player.ShowInfo'):
-            json_query = '{"jsonrpc": "2.0", "method": "Input.Info", "id": 1}'
-            self.ignoreInfoAction = True
-            self.channelList.sendJSON(json_query)
+        #This surpresses the PSTV info screen if the Kodi info screen is showing.  Better to hide the Kodi screen via your skin.
+        #if xbmc.getCondVisibility('Player.ShowInfo'):
+        #    json_query = '{"jsonrpc": "2.0", "method": "Input.Info", "id": 1}'
+        #    self.ignoreInfoAction = True
+        #    self.channelList.sendJSON(json_query)
 
         self.infoTimer.start()
 

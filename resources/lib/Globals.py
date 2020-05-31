@@ -37,9 +37,9 @@ def debug(msg, *args):
         else:
             xbmc.log(u"PSTV: {0}#{1}#".format(msg, txt).encode('ascii','xmlcharrefreplace'), xbmc.LOGDEBUG)
     except:
-        print "PSTV: Error in Debugoutput"
-        print msg
-        print args
+        print ("PSTV: Error in Debugoutput")
+        print (msg)
+        print (args)
 
 ADDON = xbmcaddon.Addon(id='script.pseudotv')
 ADDON_ID = ADDON.getAddonInfo('id')

@@ -3,13 +3,13 @@
 PseudoTV 2.5.0 update - fnord12 branch
 ======
 
-Since Steveb has taken a break, i have been digging into the code, mainly trying to fix the known problem introduced in Kodi 17 and worsened in 18 where resuming a paused video results in the channel resetting.  So far i haven't been able to address that, but in digging through the code i've found where i coild make a number of other improvements and thought it merited a "release".
+Since Steveb has taken a break, i have been digging into the code, mainly trying to fix the known problem introduced in Kodi 17 and worsened in 18 where resuming a paused video results in the channel resetting.  So far i haven't been able to address that, but in digging through the code i've found where i could make a number of other improvements and thought it merited a "release".
 
 ### BEHAVIOR UPDATES
 
 * Start Channel. Kodi's default behavior is to start with channel 1 after a Forced Reset, but to otherwise remember the last channel you were on and continue playing from there.  The problem is that with the current Resume bug, it was always resetting your last channel when you came back in.  The Start Channel option allows you to circumvent the problem by always starting up on a channel where you don't care if it reset (e.g. a channel with music videos or cartoon shorts).  Then you can flip back to your movie in progress.  (Even without that bug it's a useful feature, ofc.)
 
-* Improvement/Change to Changing Channel by Number Input. When changing a channel via inputting numbers and pressing enter/ok, i've been running into a problem where Kodi's built in function for seeking would occur, returning the current channel's video to virtually the beginning (i.e. to a number of seconds from the start equal to the channel # you've entered) before changing to the new channel.  This would give the appearance that the original channel had reset.  It seems impossible to disable Kodi's seek function, but i've changed the channel changing mechanism so that you only need to input a number of numbers equal to your maximum number of visible channels, and the channel will change automatically without hitting enter.  This means if you have less than 100 (visible) channels, input 05 to go to channel five, 50 to go to channel 50, etc..  If you have over 100 channels, input 005, 050, etc..  You can still press 5 and then Enter/OK if you prefer.
+* Improvement/Change to Changing Channel by Number Input. When changing a channel via inputting numbers and pressing enter/ok, i've been running into a problem where Kodi's built in function for Seeking would occur, returning the current channel's video to virtually the beginning (i.e. to a number of seconds from the start equal to the channel # you've entered) before changing to the new channel.  This would give the appearance that the original channel had reset.  It seems impossible to disable Kodi's seek function, but i've changed the channel changing mechanism so that you only need to input a number of numbers equal to your maximum number of visible channels, and the channel will change automatically without hitting enter.  This means if you have less than 100 (visible) channels, input 05 to go to channel five, 50 to go to channel 50, etc..  If you have over 100 channels, input 005, 050, etc..  You can still press 5 and then Enter/OK if you prefer.
 
 * Jump to previous channel.  A standard TV remote function, now available in PSTV!  This is mapped to your ACTION_PREV_PICTURE key, if you have one (it's normally used for Picture Slideshows in Kodi).  If not you can map it to any key by editing your Keymap in the GLOBAL section (NOT the FullscreenVideo section) like so (mapping to the Q button in my example, you can pick what you want):
 
@@ -17,13 +17,13 @@ Since Steveb has taken a break, i have been digging into the code, mainly trying
 <keymap>
     <global>
         <keyboard>
-			<!-- leave other stuff already here -->
+		<!-- leave other stuff already here -->
 			
-			<q>PreviousPicture</q>
-		</keyboard>
+		<q>PreviousPicture</q>
+	</keyboard>
     </global>
 	
-	<!-- leave other stuff already here -->
+<!-- leave other stuff already here -->
 	
 </keymap>
 ```
@@ -40,9 +40,9 @@ Since Steveb has taken a break, i have been digging into the code, mainly trying
 
 * Added setting to configure the Brightness value for the auto-created black & white watermarks versions of your channel logos.  Also added the ability to have color watermarks.  I've found that a Brightness value of 1 (which is unchanged from the original) results in much better looking watermarks for my custom logos.  Note that you'll have to delete the old channel bug under \Kodi\userdata\addon_data\script.pseudotv\cache\ChannelBug before you'll see the change.  I could also expose the ability to control the sharpness and/or constrast level, so let me know if there's interest in that.  Honestly, though, i think you are better off manually editing the images in your cache\ChannelBug folder if it comes to that.
 
-* There is now the option for single show channels of displaying the episode name instead of the show name the EPG.  When every episode is from the same show, it seems silly to display the show title over and over again.  But if you disagree you can turn this option off.
+* There is now the option for single show channels to display the episode name instead of the show name the EPG.  When every episode is from the same show, it seems silly to display the show title over and over again.  But if you disagree you can turn this option off.
 
-* This one's a bit esoteric, but i've separated the Hiding of the Coming Up notification box DURING short videos vs. the hiding of notifications OF short videos.  The one setting used to do both (and hide Short Videos from the EPG).  Personally i didn't want to hide nofications OF short videos, but i did want to stop notifications DURING short videos (because they would appear like halfway through the video).  So i've spearated it out. 
+* This one's a bit esoteric, but i've separated the Hiding of the Coming Up notification box DURING short videos vs. the hiding of notifications OF short videos.  The one setting used to do both (and hide Short Videos from the EPG).  Personally i didn't want to hide nofications OF short videos, but i did want to stop notifications DURING short videos (because they would appear like halfway through the video).  So i've separated it out. 
 
 * Hide Leading Zeroes.  This is to accommodate the change to channel changing via number inputs, as described above.  By default, the channel numbers will now display in the appropriate number of digits (2 if you have less than 100 channels, otherwise 3).  This is the way i prefer it; if you type 05 to change to channel 5, it should remain 05.  But i can see some people hating the leading zero, so you can turn it off.  The 0 will still display when you type it, of course, but it will disappear after the channel changes, and won't appear when surfing with the arrow buttons or EPG.
 
