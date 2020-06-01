@@ -1053,7 +1053,7 @@ class ChannelList:
 
             if match:
                 if(match.group(1).endswith("/") or match.group(1).endswith("\\")):
-                    fileList.extend(self.buildFileList(match.group(1), channel))
+                    fileList.extend(self.buildFileList(match.group(1), channel, chtype))
                 else:
                     f = self.runActions(RULES_ACTION_JSON, channel, f)
                     duration = re.search('"duration" *: *([0-9]*?),', f)
@@ -1225,9 +1225,9 @@ class ChannelList:
 
             if FileAccess.exists(xbmc.translatePath('special://profile/playlists/video/') + rulename):
                 FileAccess.copy(xbmc.translatePath('special://profile/playlists/video/') + rulename, MADE_CHAN_LOC + rulename)
-                fileList.extend(self.buildFileList(MADE_CHAN_LOC + rulename, channel))
+                fileList.extend(self.buildFileList(MADE_CHAN_LOC + rulename, channel, 0))
             else:
-                fileList.extend(self.buildFileList(GEN_CHAN_LOC + rulename, channel))
+                fileList.extend(self.buildFileList(GEN_CHAN_LOC + rulename, channel, 0))
 
         self.log("buildMixedFileList returning")
         return fileList
