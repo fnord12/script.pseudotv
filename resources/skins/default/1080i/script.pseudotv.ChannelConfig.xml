@@ -769,10 +769,39 @@
 							<textcolor>FFF0F0F0</textcolor>
 							<shadowcolor>22000000</shadowcolor>
 							<label>$LOCALIZE[16015]</label>
-							<align>left</align>
+							<align>right</align>
 							<aligny>center</aligny>
 							<textoffsetx>40</textoffsetx>
 							<visible>String.IsEmpty(Control.GetLabel(200))</visible>
+						</control>
+						<control type="edit" id="201">
+							<left>0</left>
+							<top>60</top>
+							<width>1058</width>
+							<height>63</height>
+							<font>PseudoTv13</font>
+							<texturefocus colordiffuse="FF12B2E7">ptv_settings/ptv_focus.png</texturefocus>
+							<texturenofocus border="3">ptv_settings/ptv_separator.png</texturenofocus>
+							<textcolor>FFF0F0F0</textcolor>
+							<shadowcolor>22000000</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textoffsetx>40</textoffsetx>
+							<visible></visible>
+						</control>
+						<control type="label">
+							<left>0</left>
+							<top>60</top>
+							<width>600</width>
+							<height>63</height>
+							<font>PseudoTv13</font>
+							<textcolor>FFF0F0F0</textcolor>
+							<shadowcolor>22000000</shadowcolor>
+							<label>Customize Channel Plot:</label>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textoffsetx>40</textoffsetx>
+							<visible>String.IsEmpty(Control.GetLabel(201).index(1))</visible>
 						</control>
 					</control>
 				</control>

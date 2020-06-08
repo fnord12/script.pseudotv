@@ -46,9 +46,11 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.focusedcolor = "FF7d7d7d"
         self.clockMode = 0
         self.textfont  = "font13"
-        self.hideShortItems = ADDON.getSetting("HideClips") == "true"
-        self.shortItemLength = SHORT_CLIP_ENUM[int(ADDON.getSetting("ClipLength"))]
-
+        self.hideTitleBlockSize = int(ADDON.getSetting("hideTitleBlockSize"))
+        self.longBlockChannel = ADDON.getSetting('longBlockChannel').split(",")
+        self.minimumBlockSize = int(ADDON.getSetting("minimumBlockSize"))
+        self.infoOffset = 0
+        
         # Set media path.
         if os.path.exists(xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media'))):
             self.mediaPath = xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media' + '/'))
@@ -67,6 +69,16 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             self.textureButtonNoFocus = self.mediaPath + BUTTON_NO_FOCUS
         else:
             self.textureButtonNoFocus = 'button-nofocus.png'
+            
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_FOCUS_SHORT):
+            self.textureButtonFocusShort = self.mediaPath + BUTTON_FOCUS_SHORT
+        else:
+            self.textureButtonFocusShort = 'button-focus.png'
+
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_SHORT):
+            self.textureButtonNoFocusShort = self.mediaPath + BUTTON_NO_FOCUS_SHORT
+        else:
+            self.textureButtonNoFocusShort = 'button-nofocus.png'    
 
         for i in range(self.rowCount):
             self.channelButtons[i] = []
@@ -76,6 +88,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
 
     def onFocus(self, controlid):
+        #self.getControl(500).setLabel(self.getControl(controlid).getLabel())
         pass
 
 
@@ -291,6 +304,12 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             # if the channel is paused, then only 1 button needed
             if self.MyOverlayWindow.channels[curchannel - 1].isPaused:
                 self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+            # if it's a channel of all short videos, user can optionally just see 1 button
+            elif str(curchannel) in self.longBlockChannel:
+                myLabel = str(self.MyOverlayWindow.channels[curchannel - 1].name)
+            
+                self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+            
             else:
                 # Find the show that was running at the given time
                 # Use the current time and show offset to calculate it
@@ -338,7 +357,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                             shouldskip = True
 
                     # Don't show very short videos
-                    if self.MyOverlayWindow.hideShortItems and shouldskip == False:
+                    if self.MyOverlayWindow.hideShortItemsEPG and shouldskip == False:
                         if self.MyOverlayWindow.channels[curchannel - 1].getItemDuration(playlistpos) < self.MyOverlayWindow.shortItemLength:
                             shouldskip = True
                             tmpdur = 0
@@ -354,17 +373,24 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
                     width = int((basew / 5400.0) * tmpdur)
 
-                    if width < 30 and shouldskip == False:
-                        width = 30
-                        tmpdur = int(30.0 / (basew / 5400.0))
+                    if width < self.minimumBlockSize and shouldskip == False:
+                       width = self.minimumBlockSize
+                       tmpdur = int(self.minimumBlockSize / (basew / 5400.0))
 
                     if width + xpos > basex + basew:
                         width = basex + basew - xpos
 
-                    if shouldskip == False and width >= 30:
-                        mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
-                        self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
-
+                    if shouldskip == False:
+                        if width >= self.hideTitleBlockSize:
+                            mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                            
+                            self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            
+                        else:
+                            mylabel = ''
+                        
+                            self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusShort, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                        
                     totaltime += tmpdur
                     reftime += tmpdur
                     playlistpos += 1
@@ -647,15 +673,12 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         basew = self.getControl(111 + self.focusRow).getWidth()
         # use the selected time to set the video
         left, top = self.channelButtons[self.focusRow][self.focusIndex].getPosition()
+        left = float(left)
         width = self.channelButtons[self.focusRow][self.focusIndex].getWidth()
         left = left - basex + (width / 2)
         starttime = self.shownTime + (left / (basew / 5400.0))
         chnoffset = self.focusRow - 2
         newchan = self.centerChannel
-        shouldskip = False
-        
-        self.log('newchan = ' + str(newchan))
-        self.log('chnoffset = ' + str(chnoffset))
         
         while chnoffset != 0:
             if chnoffset > 0:
@@ -666,27 +689,40 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 chnoffset += 1
 
         plpos = self.determinePlaylistPosAtTime(starttime, newchan)
-        
+
         if plpos == -1:
             self.log('Unable to find the proper playlist to set from EPG')
             return
-                
-        if self.hideShortItems:
-            ItemDuration = self.MyOverlayWindow.channels[newchan - 1].getItemDuration(plpos)
-            if ItemDuration < self.shortItemLength:
-                shouldskip = True
         
-        if shouldskip == False:       
+        shouldskip = False
+        
+        if self.MyOverlayWindow.hideShortItemsEPG:
+            ItemDuration = self.MyOverlayWindow.channels[newchan - 1].getItemDuration(plpos)
+            if ItemDuration <= self.MyOverlayWindow.shortItemLength:
+                self.infoOffset = 1
+                plpos = plpos + self.infoOffset
+                self.log('self.infoOffset = ' + str(self.infoOffset))
+        #comment out the line below (shouldskip = False) to try to hide info box for small videos (it doesn't work well)
+        #need to get info onFocus (see commented line there) but the control button only has the 1 label string
+        #shouldskip = False
+        
+        if str(newchan) in self.longBlockChannel:
+            self.getControl(500).setLabel("")
+            self.getControl(501).setLabel("")
+            self.getControl(502).setText("")
+            self.getControl(503).setImage(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png')
+            if not FileAccess.exists(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png'):
+                self.getControl(503).setImage(IMAGES_LOC + 'Default.png')
+        elif shouldskip == False:       
             self.getControl(500).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemTitle(plpos))
             self.getControl(501).setLabel(self.MyOverlayWindow.channels[newchan - 1].getItemEpisodeTitle(plpos))
             self.getControl(502).setText(self.MyOverlayWindow.channels[newchan - 1].getItemDescription(plpos))
             self.getControl(503).setImage(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png')
             if not FileAccess.exists(self.channelLogos + ascii(self.MyOverlayWindow.channels[newchan - 1].name) + '.png'):
                 self.getControl(503).setImage(IMAGES_LOC + 'Default.png')
-       
         
         self.log('setShowInfo return')
-
+       
 
     # using the currently selected button, play the proper shows
     def selectShow(self):
@@ -721,9 +757,8 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         showoffset = self.MyOverlayWindow.channels[newchan - 1].showTimeOffset
 
         # adjust the show and time offsets to properly position inside the playlist
-        ItemDuration = self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos)
-        while showoffset + timedif > ItemDuration:
-            timedif -= ItemDuration - showoffset
+        while showoffset + timedif > self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos):
+            timedif -= self.MyOverlayWindow.channels[newchan - 1].getItemDuration(pos) - showoffset
             pos = self.MyOverlayWindow.channels[newchan - 1].fixPlaylistIndex(pos + 1)
             showoffset = 0
 
@@ -777,4 +812,3 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
             self.log('determinePlaylistPosAtTime return' + str(self.MyOverlayWindow.channels[channel - 1].fixPlaylistIndex(playlistpos)))
             return self.MyOverlayWindow.channels[channel - 1].fixPlaylistIndex(playlistpos)
-

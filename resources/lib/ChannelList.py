@@ -56,9 +56,13 @@ class ChannelList:
         self.DirFailWarning = False
         self.AssignDuration = False
         self.DirAssignDuration = False
-        self.AssignedDuration = 30
-        self.DirAssignedDuration = 30
+        self.AssignedDuration = 1800
+        self.DirAssignedDuration = 1800
         self.SingleShowTitleIsEp = True
+        self.UseEpisodeTitleKeepShowTitle = []
+        self.UseEpisodeTitleHideTitle = []
+        self.UseEpisodeTitleHideTitle = []
+        self.HideDirectoryTitle = []
         
         random.seed()
         self.maxNeededChannels = 999
@@ -81,10 +85,13 @@ class ChannelList:
         self.DirFailWarning = ADDON.getSetting('DirFailWarning') == "true"
         self.AssignDuration = ADDON.getSetting('AssignDuration') == "true"
         self.DirAssignDuration = ADDON.getSetting('DirAssignDuration') == "true"
-        self.AssignedDuration = ASSIGNED_DURATION[int(ADDON.getSetting("AssignedDuration"))]
-        self.DirAssignedDuration = DIR_ASSIGNED_DURATION[int(ADDON.getSetting("DirAssignedDuration"))]
+        self.AssignedDuration = ASSIGNED_DURATION[int(ADDON.getSetting("AssignedDuration"))] * 60
+        self.DirAssignedDuration = DIR_ASSIGNED_DURATION[int(ADDON.getSetting("DirAssignedDuration"))] * 60
         self.SingleShowTitleIsEp = ADDON.getSetting('SingleShowTitleIsEp') == "true"
-
+        self.UseEpisodeTitleKeepShowTitle = ADDON.getSetting('UseEpisodeTitleKeepShowTitle').split(",")
+        self.UseEpisodeTitleHideTitle = ADDON.getSetting('UseEpisodeTitleHideTitle').split(",")
+        self.HideDirectoryTitle = ADDON.getSetting('HideDirectoryTitle').split(",")
+           
         if self.forceReset:
             ADDON.setSetting('ForceChannelReset', "False")
             self.forceReset = False
@@ -456,7 +463,7 @@ class ChannelList:
         fileList = []
 
         if chtype == 7:
-            fileList = self.createDirectoryPlaylist(setting1)
+            fileList = self.createDirectoryPlaylist(setting1, channel)
             israndom = True
         else:
             if chtype == 0:
@@ -703,10 +710,11 @@ class ChannelList:
         return flename
 
 
-    def createDirectoryPlaylist(self, setting1):
+    def createDirectoryPlaylist(self, setting1, channel):
         self.log("createDirectoryPlaylist " + setting1)
         fileList = []
         filecount = 0
+        chsetting3 = ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_3')
 
         def listdir_fullpath(dir):
             return [uni(os.path.join(dir, f)) for f in xbmcvfs.listdir(dir)[1]]
@@ -725,6 +733,17 @@ class ChannelList:
 
             duration = self.videoParser.getVideoLength(f)
 
+            if duration == 0:
+                self.log("Failed to find duration for directory video " + str(f), xbmc.LOGWARNING)
+                if self.DirFailWarning:
+                    if self.DirAlreadyWarned == False:
+                        assetMsg = "Possible Failure Adding Directory Video.  Check log."
+                        xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % ("PseudoTV BuildFileList", assetMsg, NOTIFICATION_DISPLAY_TIME * 500, ICON))
+                        self.AlreadyWarned = True
+                if self.DirAssignDuration:
+                    self.log("Setting default duration for " + str(f), xbmc.LOGWARNING)
+                    duration = self.DirAssignedDuration
+            
             if duration > 0:
                 filecount += 1
 
@@ -738,27 +757,32 @@ class ChannelList:
                 afile, ext = os.path.splitext(afile)
                 tmpstr = str(duration) + ','
                 
-                #tmpstr += afile + "//" + "//" + LANGUAGE(30049) + (' "{}"'.format(setting1)) + "\n"
-                ChannelName = ''    
-                if setting1[-1] == '/' or setting1[-1] == '\\':
-                    ChannelName = os.path.split(setting1[:-1])[1]
+                if chsetting3:
+                    NewPlots = chsetting3.replace('==e==',afile)
+                    NewPlotList = NewPlots.split('|')
+                    maxPlot = len(NewPlotList) - 1
+                    randPlot = random.randint(0, maxPlot)
+                    if str(channel) in self.HideDirectoryTitle:
+                        afile = ""
+                    
+                    
+                    tmpstr += afile + "//" + "//" + NewPlotList[randPlot] + "\n"
+                    
+                else:
+                    ChannelName = ''    
+                    if setting1[-1] == '/' or setting1[-1] == '\\':
+                        ChannelName = os.path.split(setting1[:-1])[1]
+                    if str(channel) in self.HideDirectoryTitle:
+                        afile = ""
+                    tmpstr += afile + "//" + "//" + LANGUAGE(30049) + (' "{}"'.format(setting1)) + "\n"
+                    #tmpstr += afile + "//" + "//" + LANGUAGE(30193) + ChannelName + LANGUAGE(30194) + afile  + ".\n"
+                    self.log('ChannelName = ' + str(ChannelName))
                 
-                
-                tmpstr += afile + "//" + "//" + LANGUAGE(30193) + ChannelName + LANGUAGE(30194) + afile  + ".\n"
-                self.log('ChannelName = ' + str(ChannelName))
                 tmpstr += setting1 + os.path.basename(f)
                 tmpstr = uni(tmpstr[:2036])
                 fileList.append(tmpstr)
-            else:
-                self.log("Failed to find duration for directory video " + str(f), xbmc.LOGWARNING)
-                if self.DirFailWarning:
-                    if self.DirAlreadyWarned == False:
-                        assetMsg = "Possible Failure Adding Directory Video.  Check log."
-                        xbmc.executebuiltin("Notification(\"PseudoTV BuildFileList\", \"%s\")" % assetMsg)
-                        self.AlreadyWarned = True
-                if self.DirAssignDuration:
-                    self.log("Setting default duration for " + str(f), xbmc.LOGWARNING)
-                    dur = self.DirAssignedDuration
+            
+           
         if filecount == 0:
             self.log('Unable to access Videos files in ' + setting1)
 
@@ -1041,7 +1065,6 @@ class ChannelList:
         #next two lines accounting for how JSON returns resume info; stripping it down to just get the position
         json_folder_detail = json_folder_detail.replace('"resume":{', '')
         json_folder_detail = re.sub(r',"total":.+?}', '', json_folder_detail)
-
         file_detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
         for f in file_detail:
             if self.threadPause() == False:
@@ -1057,7 +1080,6 @@ class ChannelList:
                 else:
                     f = self.runActions(RULES_ACTION_JSON, channel, f)
                     duration = re.search('"duration" *: *([0-9]*?),', f)
-
                     try:
                         dur = int(duration.group(1))
                     except:
@@ -1077,11 +1099,12 @@ class ChannelList:
                             dur = 0
 
                     if dur == 0:
+                        self.log('file_detail = ' + str(file_detail))
                         self.log("Failed to find duration for video " + str(f), xbmc.LOGWARNING)
                         if self.FailWarning:
                             if self.AlreadyWarned == False:
                                 assetMsg = "Possible Failure Adding Video.  Check log."
-                                xbmc.executebuiltin("Notification(\"PseudoTV BuildFileList\", \"%s\")" % assetMsg)
+                                xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % ("PseudoTV BuildFileList", assetMsg, NOTIFICATION_DISPLAY_TIME * 500, ICON))
                                 self.AlreadyWarned = True
                         if self.AssignDuration:
                             self.log("Setting default duration for " + str(f), xbmc.LOGWARNING)
@@ -1104,10 +1127,23 @@ class ChannelList:
                             plotoutline = re.search('"plotoutline" *: *"(.*?)","', f)
                             artist = re.search('"artist" *: *\[(.*?)\]',f)
                             
-                            if len(plotoutline.group(1)) > 0:
-                                theplot = plotoutline.group(1)
-                            elif len(plotoutline.group(1)) == 0 and len(plot.group(1)) > 0:
-                                theplot = plot.group(1)
+                            if plotoutline is None:
+                                plotoutlineCandidate = ""
+                            else:
+                                plotoutlineCandidate = plotoutline.group(1)
+                            
+                            if plot is None:
+                                plotCandidate = ""
+                            else:
+                                plotCandidate = plot.group(1)
+                           
+                            if plotCandidate is None:
+                                plotCandidate = ""
+                            
+                            if len(plotoutlineCandidate) > 0:
+                                theplot = plotoutlineCandidate
+                            elif len(plotoutlineCandidate) == 0 and len(plotCandidate) > 0:
+                                theplot = plotCandidate
                             else:
                                 theplot = LANGUAGE(30023)
 
@@ -1119,20 +1155,29 @@ class ChannelList:
                             resumePosition = re.search('"position" *: *([0-9]+\.[0-9]),', f)
                             id = re.search('"id" *: *([0-9]+)', f)
 
-                            playcountval = playcount.group(1)
-                            resumePositionval = resumePosition.group(1)
-                            lastplayedval = lastplayed.group(1)
-                            idval = id.group(1)
-                            artist = artist.group(1)
-                            artist = artist.strip('"')
-                                                        
+                            if playcount != None:
+                                playcountval = playcount.group(1)
+                            
+                            if resumePosition != None:
+                                resumePositionval = resumePosition.group(1)
+                                
+                            if lastplayed != None:
+                                lastplayedval = lastplayed.group(1)
+                            
+                            if id != None:
+                                idval = id.group(1)
+                                
+                            if artist != None:
+                                artist = artist.group(1)
+                                artist = artist.strip('"')
+                                  
                             # This is a TV show
                             if showtitle != None and len(showtitle.group(1)) > 0:
-                                #swtitle is *episode* title, not showtitle.
-                                swtitle = title.group(1)
+                                if title != None:
+                                    eptitle = title.group(1)
                                 
-                                if "." in swtitle:
-                                    param, swtitle = swtitle.split(". ", 1)
+                                if "." in eptitle:
+                                    param, eptitle = eptitle.split(". ", 1)
                                 
                                 season = re.search('"season" *: *(.*?),', f)
                                 episode = re.search('"episode" *: *(.*?),', f)
@@ -1140,19 +1185,29 @@ class ChannelList:
                                 epval = episode.group(1).zfill(2)
                                 sxexx = (' ({})'.format(seasonval + 'x' + epval))
 
-                                if chtype == 6 and self.SingleShowTitleIsEp:
-                                    newShowTitle = swtitle
-                                    #if single show, out the episode title in the show title, and then clear it from episode
+                                if str(channel) in self.UseEpisodeTitleKeepShowTitle:
+                                    newShowTitle = eptitle
+                                    #if single show, put the episode title in the show title, and then clear it from episode
                                     if epval != None and len(episode.group(1)) > 0 and self.YearEpInfo == 'false':
-                                        swtitle = sxexx
+                                        eptitle = showtitle.group(1) + sxexx
                                     elif epval != None and len(episode.group(1)) > 0 and self.YearEpInfo == 'true':
-                                        swtitle = ""
-                                    tmpstr += newShowTitle + "//" + swtitle + "//" + theplot
-                                else:    
-                                    swtitle = ('"{}"'.format(swtitle))
+                                        eptitle = showtitle.group(1)
+                                    tmpstr += newShowTitle + "//" + eptitle + "//" + theplot
+                                elif str(channel) in self.UseEpisodeTitleHideTitle:
+                                    newShowTitle = eptitle
+                                    self.log('newShowTitle = ' + str(newShowTitle))
+                                    #if single show, put the episode title in the show title, and then clear it from episode
                                     if epval != None and len(episode.group(1)) > 0 and self.YearEpInfo == 'false':
-                                        swtitle = swtitle + sxexx
-                                    tmpstr += showtitle.group(1) + "//" + swtitle + "//" + theplot
+                                        eptitle = sxexx
+                                    elif epval != None and len(episode.group(1)) > 0 and self.YearEpInfo == 'true':
+                                        eptitle = ""
+                                    tmpstr += newShowTitle + "//" + eptitle + "//" + theplot
+                                else: 
+                                    eptitle = ('"{}"'.format(eptitle))
+                                    self.log('eptitle = ' + str(eptitle))
+                                    if epval != None and len(episode.group(1)) > 0 and self.YearEpInfo == 'false':
+                                        eptitle = eptitle + sxexx
+                                    tmpstr += showtitle.group(1) + "//" + eptitle + "//" + theplot
                             else:
                                 # This is a movie or music video
                                 if showtitle == None or len(showtitle.group(1)) == 0:
@@ -1170,10 +1225,9 @@ class ChannelList:
                                     else:
                                         tmpstr += "//" + "//" + theplot
 
-                            #tmpstr = tmpstr[:2036]
+                            #cutting off extremely long plots
                             tmpstr = uni(tmpstr[:1990])
-                            #^^^stealing some characters from plot for reset values
-                            #then adding those values
+                            
                             tmpstr += "//"  + playcountval
                             tmpstr += "//"  + resumePositionval
                             tmpstr += "//"  + lastplayedval
@@ -1190,17 +1244,19 @@ class ChannelList:
                             else:
                                 fileList.append(tmpstr)
                     except:
+                        self.log('error in the try/except for build file (probably just excludes from Dont Play Watched?)' + str(match.group(1)))
                         pass
             else:
                 continue
 
         if self.channels[channel - 1].mode & MODE_ORDERAIRDATE > 0:
+            
             seasoneplist.sort(key=lambda seep: seep[1])
             seasoneplist.sort(key=lambda seep: seep[0])
 
             for seepitem in seasoneplist:
                 fileList.append(seepitem[2])
-
+        
         if filecount == 0:
             self.log(json_folder_detail)
 
@@ -1225,9 +1281,9 @@ class ChannelList:
 
             if FileAccess.exists(xbmc.translatePath('special://profile/playlists/video/') + rulename):
                 FileAccess.copy(xbmc.translatePath('special://profile/playlists/video/') + rulename, MADE_CHAN_LOC + rulename)
-                fileList.extend(self.buildFileList(MADE_CHAN_LOC + rulename, channel, 0))
+                fileList.extend(self.buildFileList(MADE_CHAN_LOC + rulename, channel, 5))
             else:
-                fileList.extend(self.buildFileList(GEN_CHAN_LOC + rulename, channel, 0))
+                fileList.extend(self.buildFileList(GEN_CHAN_LOC + rulename, channel, 5))
 
         self.log("buildMixedFileList returning")
         return fileList

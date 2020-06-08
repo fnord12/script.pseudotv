@@ -1035,9 +1035,9 @@ class InterleaveChannel(BaseRule):
                 startindex += 1
 
             startingep = channelList.channels[chan - 1].fixPlaylistIndex(startingep) + 1
-            # Write starting episode
+            # Write starting episode - why do we want to rewrite the starting channel?
             self.optionValues[2] = str(startingep)
-            ADDON_SETTINGS.setSetting('Channel_' + str(curchan) + '_rule_' + str(curruleid + 1) + '_opt_4', self.optionValues[2])
+            #ADDON_SETTINGS.setSetting('Channel_' + str(curchan) + '_rule_' + str(curruleid + 1) + '_opt_4', self.optionValues[2])
             self.log("Done interleaving, new length is " + str(len(newfilelist)))
             return newfilelist
 
@@ -1176,7 +1176,6 @@ class PlayShowInOrder(BaseRule):
 
 
     def runAction(self, actionid, channelList, param):
-        debug('runAction actionid = ', actionid)
         self.log('runAction start param = ' + str(param))
         if actionid == RULES_ACTION_START:
             del self.showInfo[:]
@@ -1209,7 +1208,6 @@ class PlayShowInOrder(BaseRule):
     def sortShows(self, channelList, filelist):
         if len(self.showInfo) == 0:
             return filelist
-        debug('sortShows')
         newfilelist = []
         self.showInfo.sort(key=lambda seep: seep[3])
         self.showInfo.sort(key=lambda seep: seep[2])
@@ -1223,7 +1221,7 @@ class PlayShowInOrder(BaseRule):
         showlist.append([])
         showlist[0].append(curshow.lower())
         showlist[0].append(0)
-        debug('showlist = ', showlist)
+        
         for item in self.showInfo:
             if channelList.threadPause() == False:
                 return filelist
@@ -1233,12 +1231,10 @@ class PlayShowInOrder(BaseRule):
                 showlist.append([])
                 showlist[-1].append(curshow.lower())
                 showlist[-1].append(0)
-                debug('showlist = ', showlist)
             showstr = self.findInFileList(filelist, item[1])
 
             if len(showstr) > 0:
                 showlist[-1].append(showstr)
-                debug('showlist = ', showlist)
         curindex = 0
 
         for item in filelist:
@@ -1486,5 +1482,4 @@ class EvenShowsRule(BaseRule):
                         return item
 
         return ''
-
 
