@@ -64,15 +64,15 @@ And those four plot summaries will now randomly populate your EPG for that chann
 
 I've also tweaked my solution to issue #2 and it seems somewhat better now, but it can still sometimes get out of sync if you are hiding short videos from the EPG.  So, as an alternative, you allow your "short videos"/commercials to display in the EPG and utilize some of these new options.  Putting together all of the above updates, here's what you can do:
 
-![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/screenshots/EPG1.png?raw=true "Episode Guide 1")
+![Episode Guide 1](https://github.com/fnord12/script.pseudotv/blob/4.5.1/resources/screenshots/EPG1.png?raw=true "Episode Guide 1")
 
-![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/screenshots/EPG2.png?raw=true "Episode Guide 2")
+![Episode Guide 2](https://github.com/fnord12/script.pseudotv/blob/4.5.1/resources/screenshots/EPG2.png?raw=true "Episode Guide 2")
 
 In the above screenshots, there are short videos interleaved between every show on channel 1.  Note that they are mostly invisible, and even when not they're unobtrusive (the difference between invisible and unobtrusive has to do with the length of the video and other mysterious factors that i can't control).  Note that even when passing over the commercial, it just shows a fun custom plot/message and nothing ugly.
 
 And if you press I during a commercial, it again shows nothing ugly.  (In Hide mode, pressing I during a short video does nothing, which always felt like something was broken to me.) (Also note i've replaced the generic missing video picture with the PSTV logo.)
 
-![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/screenshots/Commercial.png?raw=true "Commercial")
+![Commercial](https://github.com/fnord12/script.pseudotv/blob/4.5.1/resources/screenshots/Commercial.png?raw=true "Commercial")
 
 Having these options also helps for people who have legitimate short videos that they want to display which overlap in length with commercials.
 
