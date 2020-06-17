@@ -326,7 +326,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                 self.setListData(self.mixedGenreList, 182, ListChoice)
         elif controlId == 190 or controlId == 191:      # TV Show channel
             ListOptions = self.showList
-            ListChoice = xbmcgui.Dialog().select("Choose A Genre", ListOptions)
+            ListChoice = xbmcgui.Dialog().select("Choose A Show", ListOptions)
             if ListChoice != -1:
                 self.setListData(self.showList, 192, ListChoice)
         elif controlId == 200:      # Directory channel, select

@@ -1251,8 +1251,8 @@ class ChannelList:
 
         if self.channels[channel - 1].mode & MODE_ORDERAIRDATE > 0:
             
-            seasoneplist.sort(key=lambda seep: seep[1])
-            seasoneplist.sort(key=lambda seep: seep[0])
+            seasoneplist.sort(key=lambda seep: int(seep[1]))
+            seasoneplist.sort(key=lambda seep: int(seep[0]))
 
             for seepitem in seasoneplist:
                 fileList.append(seepitem[2])
