@@ -233,7 +233,7 @@ msgid " for "
 msgstr " עבור "
 
 msgctxt "#30196"
-msgid "Hide Coming Up Box DURING Short Videos"
+msgid "Hide Coming Up Next box DURING Short Videos"
 msgstr ""
 
 msgctxt "#30197"
@@ -294,4 +294,40 @@ msgstr ""
 
 msgctxt "#30211"
 msgid "Show episode titles in EPG for Single Show Channels"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Play shows in order"
+msgstr ""
+
+msgctxt "#30213"
+msgid "Use Episode Title Instead of Show Title on EPG / TV Channels only / ex: 35,42,114"
+msgstr ""
+
+msgctxt "#30214"
+msgid "Hide Show Title on Info screen"
+msgstr ""
+
+msgctxt "#30215"
+msgid "Keep Show Title on Info screen"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Hide All Titles (Dir Channels only)"
+msgstr ""
+
+msgctxt "#30217"
+msgid "Information"
+msgstr ""
+
+msgctxt "#30218"
+msgid "Hide very short videos from EPG"
+msgstr ""
+
+msgctxt "#30219"
+msgid "Hide Labels on EPG blocks under this pixel width"
+msgstr ""
+
+msgctxt "#30221"
+msgid "Minimum EPG block size"
 msgstr ""

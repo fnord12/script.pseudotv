@@ -152,8 +152,8 @@ class ResetWatched:
 
                             if 'error":{"code"' in json_folder_detail:
                                 self.log("JSON Error: " +  json_folder_detail, xbmc.LOGWARNING)
-                                #assetMsg = "Possible Failure.  Check log."
-                                #xbmc.executebuiltin("Notification(\"PseudoTV Reset\", \"%s\")" % assetMsg)
+                                assetMsg = "Possible Failure.  Check log."
+                                xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % ("PseudoTV BuildFileList", assetMsg, NOTIFICATION_DISPLAY_TIME * 500, ICON))
                                 self.log("Failed to reset Episode " + str(ID), xbmc.LOGWARNING)
                             
                             else:
@@ -184,7 +184,7 @@ class ResetWatched:
                             if 'error":{"code"' in json_folder_detail:
                                 self.log("JSON Error: " +  json_folder_detail, xbmc.LOGWARNING)
                                 assetMsg = "Possible Failure.  Check log."
-                                xbmc.executebuiltin("Notification(\"PseudoTV Reset\", \"%s\")" % assetMsg)
+                                xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % ("PseudoTV BuildFileList", assetMsg, NOTIFICATION_DISPLAY_TIME * 500, ICON))
                                 self.log("Failed to reset Movie " + str(ID), xbmc.LOGWARNING)
                                 
                             else: 

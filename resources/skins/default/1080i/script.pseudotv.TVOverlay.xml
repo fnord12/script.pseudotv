@@ -111,12 +111,12 @@
 				<visible>String.IsEmpty(Player.Art(tvshow.poster)) + !String.IsEmpty(Player.Art(poster))</visible>
 			</control>
 			<control type="image">
-				<top>715</top>
+				<top>650</top>
 				<width>253</width>
 				<height>372</height>
-				<texture>ptv_DefaultVideo.png</texture>
+				<texture>Default.png</texture>
+				<aligny>top</aligny>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture border="20">ptv_thumb_shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 				<visible>String.IsEmpty(Player.Art(tvshow.poster)) + String.IsEmpty(Player.Art(poster))</visible>
 			</control>
@@ -156,7 +156,7 @@
 				<font>PseudoTv13</font>
 				<textcolor>AAFFFFFF</textcolor>
 				<shadowcolor>22000000</shadowcolor>
-				<autoscroll time="2000" delay="1000" repeat="1000">True</autoscroll>
+				<autoscroll time="2000" delay="2000" repeat="1000">True</autoscroll>
 			</control>
 			<control type="image" id="506">
 				<description>Show Channel Icon</description>
@@ -249,7 +249,7 @@
 			<height>109</height>
 			<aspectratio>keep</aspectratio>
 			<visible>Player.HasVideo + ![Player.Seeking | Player.Paused | Player.Forwarding | Player.Rewinding | Player.IsTempo]</visible>
-			<animation effect="fade" end="20" condition="True">conditional</animation>
+			<animation effect="fade" end="30" condition="True">conditional</animation>
 		</control>
 	</controls>
 </window>

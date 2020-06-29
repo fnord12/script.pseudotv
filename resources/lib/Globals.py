@@ -121,6 +121,9 @@ ADDON_SETTINGS = Settings.Settings()
 TIME_BAR = 'pstvTimeBar.png'
 BUTTON_NO_FOCUS = 'pstvButtonNoFocus.png'
 BUTTON_FOCUS = 'pstvButtonFocus.png'
+BUTTON_NO_FOCUS_SHORT = 'pstvButtonNoFocusShort.png'
+BUTTON_FOCUS_SHORT = 'pstvButtonFocusShort.png'
+
 
 RULES_ACTION_START = 1
 RULES_ACTION_JSON = 2
