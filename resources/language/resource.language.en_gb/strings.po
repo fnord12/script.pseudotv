@@ -896,3 +896,39 @@ msgstr ""
 msgctxt "#30221"
 msgid "Minimum EPG block size"
 msgstr ""
+
+msgctxt "#30222"
+msgid "Alternate Color Blocks / ex: 35,42,114"
+msgstr ""
+
+msgctxt "#30223"
+msgid "Alternate Color #1"
+msgstr ""
+
+msgctxt "#30224"
+msgid "Alternate Color #2"
+msgstr ""
+
+msgctxt "#30225"
+msgid "Alternate Color #3"
+msgstr ""
+
+msgctxt "#30226"
+msgid "Change Language / ex: 5,42,114 / ex: fre,eng"
+msgstr "
+
+msgctxt "#30227"
+msgid "Change Language #1 Channels"
+msgstr "
+
+msgctxt "#30228"
+msgid "Change To, Change Back"
+msgstr "
+
+msgctxt "#30229"
+msgid "Change Language #2 Channels"
+msgstr "
+
+msgctxt "#30230"
+msgid "EPG Rowcount"
+msgstr "

@@ -29,9 +29,14 @@
 		<setting id="ColorBug" type="bool" subsetting="true" label="30210" visible="eq(-2,true)" default="false"/>
 		<setting id="BugBrightness" type="enum" subsetting="true" label="30208" values=".25|.5|.75|1 (Unchanged)|1.25|1.5|1.75|2|2.25|2.5|2.75|3" default="7" visible="eq(-3,true)"/>
 		<setting type="sep"/>
-		<setting type="sep"/>
 		<setting id="ClockMode" type="enum" label="30014" default="0" lvalues="30121|30122"/>
-		
+		<setting type="sep"/>
+		<setting id="EPGRowcount" type="enum" label="30230" values="3|6|9" default="1"/>
+		<setting type="sep"/>
+		<setting type="lsep" label="30222"/>
+		<setting id="altcolorchannels1" type="text" label="30223" default=""/>
+		<setting id="altcolorchannels2" type="text" label="30224" default=""/>
+		<setting id="altcolorchannels3" type="text" label="30225" default=""/>		
 	</category>
 
 	<category label="30022">
@@ -43,6 +48,12 @@
 		<setting type="sep"/>
 		<setting id="StartChannel" type="text" label="30191" default="1"/>
 		<setting id="AlwaysUseStartChannel" type="bool" label="30192" default="false"/>
+		<setting type="sep"/>
+		<setting type="lsep" label="30226"/>
+		<setting id="languageChangeChannel" type="text" label="30227" default=""/>
+		<setting id="languageChange" type="text" label="30228" default=""/>
+		<setting id="languageChangeChannel2" type="text" label="30229" default=""/>
+		<setting id="languageChange2" type="text" label="30228" default=""/>
 	</category>
 	
 	<category label="30217">

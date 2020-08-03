@@ -28,7 +28,6 @@ from ChannelList import ChannelList
 from Rules import *
 
 
-
 class AdvancedConfig(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         self.log("__init__")

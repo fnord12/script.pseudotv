@@ -1,6 +1,6 @@
-![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/images/Default.png?raw=true "PseudoTV Logo")
+![PseudoTV logo](https://github.com/fnord12/script.pseudotv/blob/master/resources/images/Default.png?raw=true "PseudoTV Logo")
 
-PseudoTV 2.5.1 update - fnord12 branch
+PseudoTV 4.5.1 update - fnord12 branch
 ======
 
 The headline for this release is: Partial Fix for Resume Problem and EPG Configurability.  Details below.
@@ -52,7 +52,7 @@ Join BUZZR for ==e==. | Welcome to the time capsule! | Another blast from the pa
 
 And those four plot summaries will now randomly populate your EPG for that channel.  It'll look like a real channel instead of displaying the ugly file path.  The file path will show if you put nothing in the field, for those that prefer that.  And if you want the plot to be totally blank, just input a space.
 
-4. There is also now an option to not display the title in tiny blocks (no point in seeing just those ugly elipses).  The number you input should be in pixels, not length.  I've found that 85 hides the labels for most of my music videos.  30 or 45 is a good number if you're just trying to hide commercials.
+4. There is also now an option to not display the title in the tiny block (no point in seeing just those ugly elipses).  The number you input should be in pixels, not length.  I've found that 85 hides the labels for most of my music videos.  30 or 45 is a good number if you're just trying to hide commercials.
 
 5. In your skins folder, you will find two new images that represent the new short blocks.  Right now they are the same as the regular sized blocks.  But this gives you the option to change their color so that when you look at the EPG you can see your bumpers/commercials as distinct items from the shows.  I prefer to leave the blocks the same color; they will often just blend into the surrounding episodes, but they can still be selected as distinct things and don't screw up the Info box (as in issue #3). But now the coloring option is available (as with anything you customize, just be sure to make a backup before taking a new release).
 
@@ -62,7 +62,7 @@ And those four plot summaries will now randomly populate your EPG for that chann
 
 8. I've also addressed an issue where if you WEREN'T hiding short videos, the EPG would sometimes not acknowledge them.  This has to do with the fact that PSTV was automatically resizing small blocks - under 30 pixels - to 30.  This would cause the EPG info to get out of sync.  I've now paramatized this value, under Performance.  I've kept the default at 30 but i've set it to 0 for myself.  But be aware that having to render many boxes can cause lag on the EPG.  So the tradeoff is between accuracy and performance.  If you have alot of short videos and are already experiencing lag on the EPG, you may consider even increasing this value (or possibily hiding short videos or utilizing the "Don't display individual blocks" option (#6 above)).
 
-I've also tweaked my solution to Issue #3 (https://github.com/fnord12/script.pseudotv/issues/3) and it seems somewhat better now, but it can still sometimes get out of sync if you are hiding short videos from the EPG.  So, as an alternative, you allow your "short videos"/commercials to display in the EPG and utilize some of these new options.  Putting together all of the above updates, here's what you can do:
+I've also tweaked my solution to issue #2 and it seems somewhat better now, but it can still sometimes get out of sync if you are hiding short videos from the EPG.  So, as an alternative, you allow your "short videos"/commercials to display in the EPG and utilize some of these new options.  Putting together all of the above updates, here's what you can do:
 
 ![Episode Guide 1](https://github.com/fnord12/script.pseudotv/blob/4.5.1/resources/screenshots/EPG1.png?raw=true "Episode Guide 1")
 
