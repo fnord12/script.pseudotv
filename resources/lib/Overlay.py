@@ -169,13 +169,10 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.HideLeadingZeroes = False
         self.previousChannel = 1
         self.startmode = 1
-<<<<<<< Updated upstream
-=======
         self.languageChangeChannel = ""
         self.languageChange = ""
         self.languageChangeChannel2 = ""
         self.languageChange2 = ""
->>>>>>> Stashed changes
 
         for i in range(3):
             self.numberColor = NUM_COLOUR[int(ADDON.getSetting("NumberColour"))]
@@ -539,8 +536,6 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.channels[self.currentChannel - 1].setShowPosition(xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition())
                 self.channels[self.currentChannel - 1].setAccessTime(time.time())
 
-<<<<<<< Updated upstream
-=======
             if (str(self.currentChannel) in self.languageChangeChannel) and (len(self.languageChange) == 2):
                self.log('changing back audio for channel = ' + str(self.currentChannel)) 
                self.changeAudio(self.languageChange[1])
@@ -548,7 +543,6 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                self.log('changing back audio for channel = ' + str(self.currentChannel)) 
                self.changeAudio(self.languageChange2[1])
 
->>>>>>> Stashed changes
         self.previousChannel = self.currentChannel
         self.currentChannel = channel
         # now load the proper channel playlist
@@ -854,42 +848,26 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                     self.getControl(103).setImage(IMAGES_LOC + 'Default2.png')
                     self.getControl(103).setPosition(posx, posy)
                 original = Image.open(self.channelLogos + ascii(self.channels[self.currentChannel - 1].name) + '.png')
-<<<<<<< Updated upstream
-                
-=======
 
->>>>>>> Stashed changes
                 if self.ColorBug:
                     converted_img =  original.convert('RGBA')
                 else:
                     converted_img = original.convert('LA')
-<<<<<<< Updated upstream
-                
-                img_bright = ImageEnhance.Brightness(converted_img)
-                converted_img = img_bright.enhance(self.BugBrightness)
-                    
-=======
 
                 img_bright = ImageEnhance.Brightness(converted_img)
                 converted_img = img_bright.enhance(self.BugBrightness)
 
->>>>>>> Stashed changes
                 if not FileAccess.exists(CHANNELBUG_LOC + ascii(self.channels[self.currentChannel - 1].name) + '.png'):
                     converted_img.save(CHANNELBUG_LOC + ascii(self.channels[self.currentChannel - 1].name) + '.png')
                 self.getControl(103).setImage(CHANNELBUG_LOC + ascii(self.channels[self.currentChannel - 1].name) + '.png')
                 self.getControl(103).setPosition(posx, posy)
 
             except:
-<<<<<<< Updated upstream
-                self.getControl(103).setImage(IMAGES_LOC + 'Default2.png')
-                self.getControl(103).setPosition(posx, posy)
-=======
                if not FileAccess.exists(CHANNELBUG_LOC + ascii(self.channels[self.currentChannel - 1].name) + '.png'):
                     self.getControl(103).setImage(IMAGES_LOC + 'Default2.png')
                else:
                     self.getControl(103).setImage(CHANNELBUG_LOC + ascii(self.channels[self.currentChannel - 1].name) + '.png')
                self.getControl(103).setPosition(posx, posy)
->>>>>>> Stashed changes
         else:
             self.getControl(103).setImage('')
 
@@ -1360,6 +1338,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
 
         if ADDON.getSettingBool("ResetWatched"):
             Reset = ResetWatched()
+            self.log("PSTV Watched List: " + str(self.Player.watchedList), xbmc.LOGWARNING)
             Reset.Resetter(self.Player.watchedList)
 
         self.close()
