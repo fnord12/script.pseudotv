@@ -336,12 +336,31 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
             # if the channel is paused, then only 1 button needed
             if self.MyOverlayWindow.channels[curchannel - 1].isPaused:
-                self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                if str(curchannel) in self.altcolorchannels1:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels2:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt2, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels3:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt3, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                else:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
             # if it's a channel of all short videos, user can optionally just see 1 button
             elif str(curchannel) in self.longBlockChannel:
                 myLabel = str(self.MyOverlayWindow.channels[curchannel - 1].name)
-            
-                self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                if str(curchannel) in self.altcolorchannels1:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels2:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt2, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels3:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt3, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                else:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
             
             else:
                 # Find the show that was running at the given time
