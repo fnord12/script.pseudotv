@@ -36,7 +36,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.focusEndTime = 0
         self.shownTime = 0
         self.centerChannel = 0
-        self.rowCount = 6
+        self.rowCount = ROWCOUNT
         self.channelButtons = [None] * self.rowCount
         self.buttonCache = []
         self.actionSemaphore = threading.BoundedSemaphore()
@@ -50,6 +50,9 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.longBlockChannel = ADDON.getSetting('longBlockChannel').split(",")
         self.minimumBlockSize = int(ADDON.getSetting("minimumBlockSize"))
         self.infoOffset = 0
+        self.altcolorchannels1 = ADDON.getSetting('altcolorchannels1').split(",")
+        self.altcolorchannels2 = ADDON.getSetting('altcolorchannels2').split(",")
+        self.altcolorchannels3 = ADDON.getSetting('altcolorchannels3').split(",")
         
         # Set media path.
         if os.path.exists(xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media'))):
@@ -63,22 +66,52 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         if xbmc.skinHasImage(self.mediaPath + BUTTON_FOCUS):
             self.textureButtonFocus = self.mediaPath + BUTTON_FOCUS
         else:
-            self.textureButtonFocus = 'button-focus.png'
+            self.textureButtonFocus = 'pstvButtonFocus.png'
 
-        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS):
-            self.textureButtonNoFocus = self.mediaPath + BUTTON_NO_FOCUS
-        else:
-            self.textureButtonNoFocus = 'button-nofocus.png'
-            
         if xbmc.skinHasImage(self.mediaPath + BUTTON_FOCUS_SHORT):
             self.textureButtonFocusShort = self.mediaPath + BUTTON_FOCUS_SHORT
         else:
-            self.textureButtonFocusShort = 'button-focus.png'
-
+            self.textureButtonFocusShort = 'pstvButtonFocus.png'
+        
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS):
+            self.textureButtonNoFocus = self.mediaPath + BUTTON_NO_FOCUS
+        else:
+            self.textureButtonNoFocus = 'pstvButtonNoFocus'
+            
         if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_SHORT):
             self.textureButtonNoFocusShort = self.mediaPath + BUTTON_NO_FOCUS_SHORT
         else:
-            self.textureButtonNoFocusShort = 'button-nofocus.png'    
+            self.textureButtonNoFocusShort = 'pstvButtonNoFocus'
+        
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT1):
+            self.textureButtonNoFocusAlt1 = self.mediaPath + BUTTON_NO_FOCUS_ALT1
+        else:
+            self.textureButtonNoFocusAlt1 = 'pstvButtonNoFocus'   
+                 
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT2):
+            self.textureButtonNoFocusAlt2 = self.mediaPath + BUTTON_NO_FOCUS_ALT2
+        else:
+            self.textureButtonNoFocusAlt2 = 'pstvButtonNoFocus'
+
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT3):
+            self.textureButtonNoFocusAlt3 = self.mediaPath + BUTTON_NO_FOCUS_ALT3
+        else:
+            self.textureButtonNoFocusAlt3 = 'pstvButtonNoFocus'       
+
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT1_SHORT):
+            self.textureButtonNoFocusAlt1Short = self.mediaPath + BUTTON_NO_FOCUS_ALT1_SHORT
+        else:
+            self.textureButtonNoFocusAlt1Short = 'pstvButtonNoFocus'
+
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT2_SHORT):
+            self.textureButtonNoFocusAlt2Short = self.mediaPath + BUTTON_NO_FOCUS_ALT2_SHORT
+        else:
+            self.textureButtonNoFocusAlt2Short = 'pstvButtonNoFocus'
+        
+        if xbmc.skinHasImage(self.mediaPath + BUTTON_NO_FOCUS_ALT3_SHORT):
+            self.textureButtonNoFocusAlt3Short = self.mediaPath + BUTTON_NO_FOCUS_ALT3_SHORT
+        else:
+            self.textureButtonNoFocusAlt3Short = 'pstvButtonNoFocus'
 
         for i in range(self.rowCount):
             self.channelButtons[i] = []
@@ -120,7 +153,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         timew = self.getControl(120).getWidth()
         timeh = self.getControl(120).getHeight()
         self.currentTimeBar = xbmcgui.ControlImage(timex, timey, timew, timeh, self.mediaPath + TIME_BAR)
-
+        
         self.addControl(self.currentTimeBar)
 
         try:
@@ -303,12 +336,31 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
             # if the channel is paused, then only 1 button needed
             if self.MyOverlayWindow.channels[curchannel - 1].isPaused:
-                self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                if str(curchannel) in self.altcolorchannels1:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels2:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt2, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels3:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt3, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                else:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
             # if it's a channel of all short videos, user can optionally just see 1 button
             elif str(curchannel) in self.longBlockChannel:
                 myLabel = str(self.MyOverlayWindow.channels[curchannel - 1].name)
-            
-                self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                if str(curchannel) in self.altcolorchannels1:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels2:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt2, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                
+                elif str(curchannel) in self.altcolorchannels3:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt3, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
+                else:
+                    self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, myLabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, textOffsetY=12, alignment=10, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
             
             else:
                 # Find the show that was running at the given time
@@ -381,15 +433,48 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                         width = basex + basew - xpos
 
                     if shouldskip == False:
-                        if width >= self.hideTitleBlockSize:
-                            mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                        if str(curchannel) in self.altcolorchannels1:
+                            if width >= self.hideTitleBlockSize:
                             
-                            self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
-                            
-                        else:
-                            mylabel = ''
+                                mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                                
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            else:
+                                mylabel = ''
                         
-                            self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusShort, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusAlt1Short, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                                
+                        elif str(curchannel) in self.altcolorchannels2:
+                            if width >= self.hideTitleBlockSize:
+                            
+                                mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                                
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt2, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            else:
+                                mylabel = ''
+                        
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusAlt2Short, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))  
+                        elif str(curchannel) in self.altcolorchannels3:
+                            if width >= self.hideTitleBlockSize:
+                            
+                                mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                                
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt3, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            else:
+                                mylabel = ''
+                        
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusAlt3Short, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor)) 
+                        else:
+                            if width >= self.hideTitleBlockSize:
+                                mylabel = self.MyOverlayWindow.channels[curchannel - 1].getItemTitle(playlistpos)
+                                
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocus, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            
+                            else:
+                                mylabel = ''
+                        
+                                self.channelButtons[row].append(xbmcgui.ControlButton(xpos, basey, width, baseh, mylabel, focusTexture=self.textureButtonFocusShort, noFocusTexture=self.textureButtonNoFocusShort, alignment=4, font=self.textfont, shadowColor='0xAA000000', textColor=self.textcolor, focusedColor=self.focusedcolor))
+                            
                         
                     totaltime += tmpdur
                     reftime += tmpdur
@@ -439,6 +524,23 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                     self.selectShow()
                     self.closeEPG()
                     self.lastActionTime = time.time()
+            elif action == ACTION_NEXT_PICTURE:
+                self.closeEPG()
+                global ROWCOUNT
+                self.log('EPG pre ROWCOUNT = ' + str(ROWCOUNT))
+                if ROWCOUNT == 3:
+                    ROWCOUNT = 6
+                elif ROWCOUNT == 6:
+                    ROWCOUNT = 9
+                elif ROWCOUNT == 9:
+                    ROWCOUNT = 3
+                self.log('EPG post ROWCOUNT = ' + str(ROWCOUNT))    
+                                
+                self.myEPG = EPGWindow("script.pseudotv.EPG" + str(ROWCOUNT) + ".xml", CWD, "default")
+                self.myEPG.channelLogos = self.channelLogos
+                self.myEPG.MyOverlayWindow = self.MyOverlayWindow 
+                self.myEPG.doModal()
+                    
         except:
             self.log("Unknown EPG Exception", xbmc.LOGERROR)
             self.log(traceback.format_exc(), xbmc.LOGERROR)

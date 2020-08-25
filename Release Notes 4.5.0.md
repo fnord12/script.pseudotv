@@ -1,6 +1,6 @@
 ![alt text](https://github.com/fnord12/script.pseudotv/blob/master/resources/images/Default.png?raw=true "PseudoTV Logo")
 
-PseudoTV 2.5.0 update - fnord12 branch
+PseudoTV 4.5.0 update - fnord12 branch
 ======
 
 Since Steveb has taken a break, i have been digging into the code, mainly trying to fix the known problem introduced in Kodi 17 and worsened in 18 where resuming a paused video results in the channel resetting.  So far i haven't been able to address that, but in digging through the code i've found where i could make a number of other improvements and thought it merited a "release".
@@ -30,7 +30,7 @@ Since Steveb has taken a break, i have been digging into the code, mainly trying
 
 * Reset Watched. I've completely reworked this for a major performance improvement (and a working progress bar!).  Also fixed a bug where it wasn't resetting if you were hiding Season/Year info.
 
-* Directory Channel Episode Plot. **Changes here superceded by 4.5.1.**
+* Directory Channel Episode Plot. For directory channels, instead of just displaying the file path as the episode plots, i've introduced some boiler plate text.  By default it's "Join [Channel Name] for "File Name]" but you can customize it by editing values 30193 & 30194 in your language's strings.po file.  Note that the spaces are part of the string so that if you don't want one, you can remove it, e.g. "It's [Channel Name]'s special showing of [File Name]".  Values can also be blank (i.e. if you want to start with the channel name, set the first one to "").  Let me know if anyone misses seeing the file path; i just felt it took you out of the experience.
 
 * Artist/Band name will now be listed for music videos.
 

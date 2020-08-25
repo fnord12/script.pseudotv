@@ -123,7 +123,12 @@ BUTTON_NO_FOCUS = 'pstvButtonNoFocus.png'
 BUTTON_FOCUS = 'pstvButtonFocus.png'
 BUTTON_NO_FOCUS_SHORT = 'pstvButtonNoFocusShort.png'
 BUTTON_FOCUS_SHORT = 'pstvButtonFocusShort.png'
-
+BUTTON_NO_FOCUS_ALT1 = 'pstvButtonNoFocusAlt1.png'
+BUTTON_NO_FOCUS_ALT2 = 'pstvButtonNoFocusAlt2.png'
+BUTTON_NO_FOCUS_ALT3 = 'pstvButtonNoFocusAlt3.png'
+BUTTON_NO_FOCUS_ALT1_SHORT = 'pstvButtonNoFocusAlt1Short.png'
+BUTTON_NO_FOCUS_ALT2_SHORT = 'pstvButtonNoFocusAlt2Short.png'
+BUTTON_NO_FOCUS_ALT3_SHORT = 'pstvButtonNoFocusAlt3Short.png'
 
 RULES_ACTION_START = 1
 RULES_ACTION_JSON = 2
@@ -155,4 +160,8 @@ ACTION_NUMBER_9 = 67
 ACTION_INVALID = 999
 ACTION_MOUSE_RIGHT_CLICK = 101 #Mouse Right Click
 CONTEXT_MENU = 117
+ACTION_NEXT_PICTURE = 28
 ACTION_PREV_PICTURE = 29
+
+EPG_ROWCOUNT = [3, 6, 9]
+ROWCOUNT = EPG_ROWCOUNT[int(ADDON.getSetting("EPGRowcount"))]

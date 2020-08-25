@@ -26,8 +26,6 @@ import random
 from Globals import *
 from Playlist import PlaylistItem
 
-
-
 class RulesList:
     def __init__(self):
         self.ruleList = [BaseRule(), ScheduleChannelRule(), HandleChannelLogo(), NoShowRule(), DontAddChannel(), EvenShowsRule(), ForceRandom(), ForceRealTime(), ForceResume(), InterleaveChannel(), OnlyUnWatchedRule(), OnlyWatchedRule(), AlwaysPause(), PlayShowInOrder(), RenameRule(), SetResetTime()]
@@ -274,6 +272,13 @@ class BaseRule:
                 cursel = 0
 
             self.optionValues[optionindex] = self.selectBoxOptions[optionindex][cursel]
+    
+    def onActionSelectBox2(self, act, optionindex):
+        if act.getId() == ACTION_SELECT_ITEM or act.getId() == ACTION_SELECT_ITEM2:
+            ListOptions = self.selectBoxOptions
+            ListChoice = xbmcgui.Dialog().select("Choose A Show", ListOptions)
+            if ListChoice != -1:
+                self.optionValues[optionindex] = ListOptions[ListChoice]
 
 
     def onActionDaysofWeekBox(self, act, optionindex):
@@ -420,8 +425,8 @@ class NoShowRule(BaseRule):
         self.optionValues = ['']
         self.myId = 2
         self.actions = RULES_ACTION_LIST
-
-
+        
+                
     def copy(self):
         return NoShowRule()
 
@@ -434,10 +439,19 @@ class NoShowRule(BaseRule):
 
 
     def onAction(self, act, optionindex):
-        self.onActionTextBox(act, optionindex)
-        self.validate()
+        if act.getId() == ACTION_SELECT_ITEM or act.getId() == ACTION_SELECT_ITEM2:
+            updateDialog = xbmcgui.DialogProgressBG()
+            updateDialog.create(ADDON_NAME, '')
+            uIndex = 50
+            updateDialog.update(uIndex, message='Populating choice box')
+            self.showFillList = []
+            self.fillTVInfo()
+            self.showFillList.sort()
+    
+            self.selectBoxOptions = self.showFillList
+            updateDialog.close()
+            self.onActionSelectBox2(act, optionindex)
         return self.optionValues[optionindex]
-
 
     def validate(self):
         self.validateTextBox(0, 20)
@@ -445,7 +459,7 @@ class NoShowRule(BaseRule):
 
     def runAction(self, actionid, channelList, filelist):
         if actionid == RULES_ACTION_LIST:
-            self.validate()
+            #self.validate()
             opt = self.optionValues[0].lower()
             realindex = 0
 
@@ -468,7 +482,26 @@ class NoShowRule(BaseRule):
 
         return filelist
 
+    def fillTVInfo(self, sortbycount = False):
+        self.log("Rules fillTVInfo")
+        json_query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties":["studio", "genre"]}, "id": 1}'
 
+        json_folder_detail = self.sendJSON(json_query)
+        detail = re.compile("{(.*?)}", re.DOTALL).findall(json_folder_detail)
+
+        for f in detail:
+            
+            match = re.search('"label" *: *"(.*?)",', f)
+
+            if match:
+                show = match.group(1).strip()
+                self.showFillList.append(show)
+
+        self.log("found shows " + str(self.showFillList))
+        
+    def sendJSON(self, command):
+        data = xbmc.executeJSONRPC(command)
+        return unicode(data, 'utf-8', errors='ignore')
 
 class ScheduleChannelRule(BaseRule):
     def __init__(self):
@@ -1350,10 +1383,10 @@ class HandleChannelLogo(BaseRule):
     def __init__(self):
         self.name = LANGUAGE(30081)
         self.optionLabels = [LANGUAGE(30082)]
-        self.optionValues = [LANGUAGE(107)]
+        self.optionValues = ["Yes"]
         self.myId = 15
         self.actions = RULES_ACTION_OVERLAY_SET_CHANNEL | RULES_ACTION_OVERLAY_SET_CHANNEL_END
-        self.selectBoxOptions = [[LANGUAGE(107), LANGUAGE(106)]]
+        self.selectBoxOptions = ["Yes", "No"]
 
 
     def copy(self):
@@ -1361,14 +1394,14 @@ class HandleChannelLogo(BaseRule):
 
 
     def getTitle(self):
-        if self.optionValues[0] == LANGUAGE(107):
+        if self.optionValues[0] == "Yes":
             return LANGUAGE(30083)
         else:
             return LANGUAGE(30084)
 
 
     def onAction(self, act, optionindex):
-        self.onActionSelectBox(act, optionindex)
+        self.onActionSelectBox2(act, optionindex)
         return self.optionValues[optionindex]
 
 
@@ -1376,7 +1409,7 @@ class HandleChannelLogo(BaseRule):
         if actionid == RULES_ACTION_OVERLAY_SET_CHANNEL:
             self.storedLogoValue = overlay.showChannelBug
 
-            if self.optionValues[0] == LANGUAGE(107):
+            if self.optionValues[0] == "Yes":
                 overlay.showChannelBug = True
                 self.log("setting channel bug to true")
             else:
