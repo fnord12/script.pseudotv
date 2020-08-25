@@ -25,7 +25,7 @@ This document briefly lists the new features in each release since i - fnord12 -
 * Lots of new options for EPG configurability:
 * --Show Episode Title instead of Show Title (with options)
 * --Hide Title for Directory channels
-* --Option to display noting in EPG for small blocks
+* --Option to display nothing in EPG for small blocks
 * --Option to show a single long block instead of individual blocks (e.g. to just have your music video channels say "MTV")
 
 ### 4.5.2
