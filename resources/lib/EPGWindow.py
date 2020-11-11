@@ -542,7 +542,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 self.myEPG.doModal()
                     
         except:
-            self.log("Unknown EPG Exception", xbmc.LOGERROR)
+            self.log("Unknown EPG Exception OnAction", xbmc.LOGERROR)
             self.log(traceback.format_exc(), xbmc.LOGERROR)
 
             try:

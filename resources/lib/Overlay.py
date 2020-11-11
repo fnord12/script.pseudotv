@@ -571,7 +571,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
                 self.channels[self.currentChannel - 1].addShowPosition(1)
                 self.channels[self.currentChannel - 1].setShowTime(0)
 
-        self.showChannelLabel(self.currentChannel)
+        
 
         xbmc.sleep(self.channelDelay)
         # set the show offset
@@ -615,6 +615,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         elif str(channel) in self.languageChangeChannel2:
             self.log('changing audio for channel = ' + str(channel))
             self.changeAudio(self.languageChange2[0])
+        
+        self.showChannelLabel(self.currentChannel)
         
         self.lastActionTime = time.time()
         self.runActions(RULES_ACTION_OVERLAY_SET_CHANNEL_END, channel, self.channels[channel - 1])
