@@ -25,3 +25,10 @@ You can copy the entire script.pseudotv folder and put it somewhere safe.  (Note
 After you've done that, uninstall PSTV via the Kodi addons menu. Then close Kodi see if you can verify that the pstv folder has been removed from the Addons folder.  Addons is a peer of Userdata, so should be able to find it by going to the parent folder of Userdata (i'm not sure if this is true in every OS, though).  Look for a folder again called "script.pseudotv".  It shouldn't still be there, but if it is, delete it.
  
 Then install my latest version of PSTV.  If everything is now working but you've lost your channel setup, restore your userdata.  MAKE SURE TO PUT IT BACK IN \userdata\addon_data NOT \addons!
+
+## Some Common Issues
+
+If a custom playlist for TV shows is not playing/populating, make sure it is of Type = Episodes, not Type = TVShow
+
+If having trouble with some videos not showing up:
+There is a longstanding problem where PSTV won't play videos if it can't find the duration of them, even if they play in Kodi, and in my 4.5.0 releases I added a bunch of options to try to get around the problem. So under PSTV Settings > Performance you can cause a default duration to be assigned when it's not finding one. That will help as a workaround.  A longer term solution is that there's an encoding problem with your files that can be fixed by running them through MKVToolNix or ffmpeg or similar.
