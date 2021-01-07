@@ -639,6 +639,28 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.log('goUp return')
 
 
+<<<<<<< Updated upstream
+=======
+    def GoPgUp(self):
+        self.log('GoPgUp')
+        newchannel = self.centerChannel
+        for x in range(0, self.rowCount):
+            newchannel = self.MyOverlayWindow.fixChannel(newchannel - 1, False)
+        self.setChannelButtons(self.shownTime, self.MyOverlayWindow.fixChannel(newchannel))
+        self.setProperButton(0)
+        self.log('GoPgUp return')
+
+    def GoPgDown(self):
+        self.log('GoPgDown')
+        newchannel = self.centerChannel
+        for x in range(0, self.rowCount):
+            newchannel = self.MyOverlayWindow.fixChannel(newchannel + 1)
+        self.setChannelButtons(self.shownTime, self.MyOverlayWindow.fixChannel(newchannel))
+        self.setProperButton(0)
+        self.log('GoPgDown return') 
+
+        
+>>>>>>> Stashed changes
     def GoLeft(self):
         self.log('goLeft')
         basex, basey = self.getControl(111 + self.focusRow).getPosition()
