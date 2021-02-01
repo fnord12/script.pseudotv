@@ -638,9 +638,6 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.setProperButton(self.focusRow - 1)
         self.log('goUp return')
 
-
-<<<<<<< Updated upstream
-=======
     def GoPgUp(self):
         self.log('GoPgUp')
         newchannel = self.centerChannel
