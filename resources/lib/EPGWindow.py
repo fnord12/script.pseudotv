@@ -656,8 +656,6 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.setProperButton(0)
         self.log('GoPgDown return') 
 
-        
->>>>>>> Stashed changes
     def GoLeft(self):
         self.log('goLeft')
         basex, basey = self.getControl(111 + self.focusRow).getPosition()
@@ -723,7 +721,6 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.focusTime = starttime + 30
         self.log('goRight return')
 
-
     def findButtonAtTime(self, row, selectedtime):
         self.log('findButtonAtTime ' + str(row))
         basex, basey = self.getControl(111 + row).getPosition()
@@ -741,7 +738,6 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 return i
 
         return -1
-
 
     # based on the current focus row and index, find the appropriate button in
     # the new row to set focus to
