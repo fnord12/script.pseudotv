@@ -511,6 +511,10 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 self.GoDown()
             elif action == ACTION_MOVE_UP:
                 self.GoUp()
+            elif action == ACTION_PAGEDOWN: 
+                self.GoPgDown()  
+            elif action == ACTION_PAGEUP: 
+                self.GoPgUp()  
             elif action == ACTION_MOVE_LEFT:
                 self.GoLeft()
             elif action == ACTION_MOVE_RIGHT:
@@ -638,6 +642,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.setProperButton(self.focusRow - 1)
         self.log('goUp return')
 
+
     def GoPgUp(self):
         self.log('GoPgUp')
         newchannel = self.centerChannel
@@ -656,6 +661,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.setProperButton(0)
         self.log('GoPgDown return') 
 
+        
     def GoLeft(self):
         self.log('goLeft')
         basex, basey = self.getControl(111 + self.focusRow).getPosition()
@@ -721,6 +727,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.focusTime = starttime + 30
         self.log('goRight return')
 
+
     def findButtonAtTime(self, row, selectedtime):
         self.log('findButtonAtTime ' + str(row))
         basex, basey = self.getControl(111 + row).getPosition()
@@ -738,6 +745,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 return i
 
         return -1
+
 
     # based on the current focus row and index, find the appropriate button in
     # the new row to set focus to
