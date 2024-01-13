@@ -1,5 +1,5 @@
 2.5.1 (XeXoasz)
-     Added 4:3 Channel Bug Positions.
+    Added 4:3 Channel Bug Positions.
 
 2.5.0 (fnord12)
 	Fully baked Reset Watched.  
