@@ -99,7 +99,7 @@ GEN_CHAN_LOC = os.path.join(CHANNELS_LOC, 'generated' + '/')
 MADE_CHAN_LOC = os.path.join(CHANNELS_LOC, 'stored' + '/')
 CHANNELBUG_LOC = xbmc.translatePath(os.path.join(CHANNELS_LOC, 'ChannelBug' + '/'))
 
-CHANNELBUG_POS = [[19,19], [1695,19], [1695,952], [19,952], [250,19], [1483,19], [1483,952], [250,952]]
+CHANNELBUG_POS = [[19,19],[1695,19], [1695,952],[19,952],[250,19],[1483,19], [1483,952],[250,952]]
 
 SHORT_CLIP_ENUM = [15, 30, 60, 90, 120, 180, 240, 300, 360]
 INFO_DUR = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
