@@ -34,3 +34,9 @@ This document briefly lists the new features in each release since i - fnord12 -
 * Ability to specify that a channel always choose a certain language track
 * Workaround for when PSTV can't create a watermark
 * Better UI for Don't Include A Show and Channel Logo advanced rules
+
+### 4.5.3
+* Press Page Up or Page Down to navigate the EPG. Thanks to jlippold!
+
+### 4.5.4
+* Added 4:3 Channel Bug Positions. Thanks to XeXoasz!
