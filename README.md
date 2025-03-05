@@ -1,6 +1,6 @@
 ![alt text](https://github.com/Steveb1968/script.pseudotv/blob/master/resources/images/Default.png?raw=true "PseudoTV Logo")
 
-PseudoTV for Kodi
+PseudoTV for Kodi 21 Omega
 ======
 
 [View branch download information.](#branches-guide)
