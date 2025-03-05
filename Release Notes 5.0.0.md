@@ -13,7 +13,7 @@ The problem: A lot of videos floating around have improper headers or other slig
 
 PseudoTV used to try to manually check the video lengths but it could only do so for certain file formats / codecs and increasingly it wasn't working anymore.  Plus it was slow to have to recheck those lengths every time.
 
-So with this version I have dropped to old way to check for file lengths and am instead using FFMPEG.  This requires you to have FFMPEG properly installed on your OS.  FFMPEG free, open source, widely used, and multi-platform.  For Linux it should be there by default.  For Windows you will have to download it and set the proper path.   Here are instructions for Windows 10 & 11: https://windowsloop.com/install-ffmpeg-windows-10/
+So with this version I have dropped to old way to check for file lengths and am instead using FFMPEG.  This requires you to have FFMPEG properly installed on your OS.  FFMPEG is free, open source, widely used, and multi-platform.  For Linux it should be there by default.  For Windows you will have to download it and set the proper path.   Here are instructions for Windows 10 & 11: https://windowsloop.com/install-ffmpeg-windows-10/
 
 I've found you have to reboot your computer after following the above instructions.
 
