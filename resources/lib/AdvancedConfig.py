@@ -347,7 +347,7 @@ class AdvancedConfig(xbmcgui.WindowXMLDialog):
         strlen = len(self.getRuleName(self.selectedRuleIndex))
         spacesstr = ''
 
-        for i in range(20 - strlen / 2):
+        for i in range(20 - strlen // 2):
             spacesstr += ' '
 
         self.getControl(131).setLabel('<<' + spacesstr + self.getRuleName(self.selectedRuleIndex) + spacesstr + '>>')

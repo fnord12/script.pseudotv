@@ -20,32 +20,24 @@ import xbmc
 import os, platform
 import subprocess
 
-import MP4Parser as MP4Parser
-import AVIParser as AVIParser
-import MKVParser as MKVParser
-import FLVParser as FLVParser
-import TSParser  as TSParser
+import VideoParserFFProbe as VideoParserFFProbe
 
-from Globals import *
+import Globals, xbmcvfs
 from FileAccess import FileAccess
-
-
+from Globals import *
 
 class VideoParser:
     def __init__(self):
-        self.AVIExts = ['.avi']
-        self.MP4Exts = ['.mp4', '.m4v', '.3gp', '.3g2', '.f4v', '.mov']
-        self.MKVExts = ['.mkv']
-        self.FLVExts = ['.flv']
-        self.TSExts  = ['.ts', '.m2ts']
-
-
+        self.Exts = ['.mkv', '.mp4', '.m4v', '.3gp', '.3g2', '.f4v', '.mov', '.avi', '.flv', '.ts', '.m2ts']
+        self.durationFile = xbmcvfs.translatePath(os.path.join(Globals.SETTINGS_LOC, 'filedurations.txt'))
+        
+        
     def log(self, msg, level = xbmc.LOGDEBUG):
         log('VideoParser: ' + msg, level)
 
 
     def getVideoLength(self, filename):
-        self.log("getVideoLength " + filename)
+        self.log("getVideoLength " + str(filename))
 
         if len(filename) == 0:
             self.log("No file name specified")
@@ -55,21 +47,82 @@ class VideoParser:
             self.log("Unable to find the file")
             return 0
 
-        base, ext = os.path.splitext(filename)
-        ext = ext.lower()
+        fileDuration = self.readDurationFile(filename)
+        if fileDuration == False:
+        
+            base, ext = os.path.splitext(filename)
+            ext = ext.lower()
 
-        if ext in self.AVIExts:
-            self.parser = AVIParser.AVIParser()
-        elif ext in self.MP4Exts:
-            self.parser = MP4Parser.MP4Parser()
-        elif ext in self.MKVExts:
-            self.parser = MKVParser.MKVParser()
-        elif ext in self.FLVExts:
-            self.parser = FLVParser.FLVParser()
-        elif ext in self.TSExts:
-            self.parser = TSParser.TSParser()
+            if ext in self.Exts:
+                self.parser = VideoParserFFProbe.VideoParserFFProbe()
+            
+            else:    
+                self.log("Unsupported extension " + str(ext))
+                return 0
+
+            #try:
+                
+            duration = self.parser.determineLength(filename)
+            if duration != 0:
+                self.writeDuration(filename, duration)
+            
+            return duration
+            
+            #except:
+            #    self.log("Exception trying FFPROBE - see ReadMe on installing FFMEG")
+            #    return 0
+        
         else:
-            self.log("No parser found for extension " + ext)
-            return 0
+            return fileDuration
 
-        return self.parser.determineLength(filename)
+    def readDurationFile(self, filename):
+        self.log('RDF readDurationFile: ' + filename)
+        if FileAccess.exists(self.durationFile):
+            
+            with open(self.durationFile, 'r') as fp:
+                for l_no, line in enumerate(fp):
+                    # search string
+                    # self.log('RDF line: :' + str(line))
+                    
+                    if filename in line:
+                        #self.log('RDF string found in a file')
+                        #self.log('RDF Line Number: ' + str(l_no))
+                        #self.log('RDF Line: ' +  str(line))
+                        
+                        splitLine=line.split('|')
+                        duration = float(splitLine[1])
+                        
+                        self.log('RDF duration: ' + str(duration))
+                        return int(duration)
+                        # don't look for next lines
+                        break
+                else:
+                    self.log('RDF readDurationFile - No Match')
+                    return False
+        else:
+            self.log('RDF no file yet')
+            return False            
+    
+    
+    def writeDuration(self, filename, duration):
+        if FileAccess.exists(self.durationFile):
+            self.log('writeDuration found file, append')
+            append_write = 'a' 
+        else:
+            self.log('writeDuration file not found, make new')
+            append_write = 'w' 
+        
+        fle = open(self.durationFile, append_write, encoding="utf-8")
+        
+        flewrite = (Globals.uni(filename) + "|" + Globals.uni(str(duration))   + "\n")
+
+        fle.write(flewrite)
+        fle.close()        
+        
+        
+        #except:
+        #    self.log("Unable to open the duration file for writing")
+        #    return
+
+        
+

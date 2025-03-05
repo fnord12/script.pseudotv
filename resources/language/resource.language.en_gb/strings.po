@@ -486,19 +486,19 @@ msgid "12 sec"
 msgstr ""
 
 msgctxt "#30117"
-msgid "upper left"
+msgid "upper left 16:9"
 msgstr ""
 
 msgctxt "#30118"
-msgid "upper right"
+msgid "upper right 16:9"
 msgstr ""
 
 msgctxt "#30119"
-msgid "lower right"
+msgid "lower right 16:9"
 msgstr ""
 
 msgctxt "#30120"
-msgid "lower left"
+msgid "lower left 16:9"
 msgstr ""
 
 msgctxt "#30121"
@@ -932,3 +932,31 @@ msgstr "
 msgctxt "#30230"
 msgid "EPG Rowcount"
 msgstr "
+
+msgctxt "#30231"
+msgid "upper left 4:3"
+msgstr ""
+
+msgctxt "#30232"
+msgid "upper right 4:3"
+msgstr ""
+
+msgctxt "#30233"
+msgid "lower right 4:3"
+msgstr ""
+
+msgctxt "#30234"
+msgid "lower left 4:3"
+msgstr ""
+
+msgctxt "#30235"
+msgid "checking file length"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Exclude From Reset"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Write to Debugger"
+msgstr ""

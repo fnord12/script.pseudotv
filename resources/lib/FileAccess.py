@@ -41,11 +41,12 @@ class FileAccess:
     @staticmethod
     def open(filename, mode, encoding = "utf-8"):
         fle = 0
-        FileAccess.log("trying to open " + filename)
-
+        #FileAccess.log("trying to open " + filename)
         try:
+            FileAccess.log ('trying to write, mode: ' + mode)
             return VFSFile(filename, mode)
         except UnicodeDecodeError:
+            FileAccess.log ('exception in file write')
             return FileAccess.open(ascii(filename), mode, encoding)
 
         return fle
@@ -178,8 +179,8 @@ class VFSFile:
 
 
     def write(self, data):
-        if isinstance(data, unicode):
-            data = bytearray(data, "utf-8")
+        if isinstance(data, str):
+            data = bytearray(data, "utf-8", "ignore")
             data = bytes(data)
 
         return self.currentFile.write(data)
@@ -228,7 +229,7 @@ class FileLock:
         self.log("close")
         self.isExiting = True
 
-        if self.refreshLocksTimer.isAlive():
+        if self.refreshLocksTimer.is_alive():
             try:
                 self.refreshLocksTimer.cancel()
                 self.refreshLocksTimer.join()
@@ -244,7 +245,7 @@ class FileLock:
 
 
     def refreshLocks(self):
-        self.log("refreshLocks")
+        self.log("refreshLocks " + str(time.ctime()) )
 
         for item in self.lockedList:
             if self.isExiting:
@@ -356,6 +357,7 @@ class FileLock:
                 fle.close()
                 return True
             except:
+                self.log("Exception trying to get file lock, sleeping....")
                 xbmc.sleep(500)
 
         self.log("Creating lock file")
@@ -393,6 +395,7 @@ class FileLock:
             try:
                 lines.append(str(random.randint(1, 60000)) + "," + filename + "\n")
             except:
+                self.log("Exception testing write to file - entry doesn't exist?")
                 return False
 
         try:
@@ -430,6 +433,7 @@ class FileLock:
                     setval = int(line[:index])
                     flenme = line[index + 1:].strip()
                 except:
+                    self.log("Exception getting value and filename")
                     setval = -1
                     flenme = ''
 

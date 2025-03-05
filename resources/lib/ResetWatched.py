@@ -33,22 +33,26 @@ class ResetWatched:
         self.updateIndex = 0
         self.processingSemaphore = threading.BoundedSemaphore()
         self.maxNeededChannels = int(ADDON.getSetting("maxNeededChannels"))*50 + 100
+        self.ExcludeFromReset = ADDON.getSetting('ExcludeFromReset').split(",")
 
     def readFile(self,maxChannels,watchedList):
         channel = 1
-        
-        debug('watchedList = ', watchedList)
+                
+        self.log('watchedList = ' + str(watchedList))
         
         updateDialog = xbmcgui.DialogProgressBG()
         updateDialog.create(ADDON_NAME, '')
         uIndex = self.updateIndex
             
         while channel <= maxChannels:
-            uIndex = int((channel/float(maxChannels))*100)
-            updateDialog.update(uIndex, message='Exiting - Resetting Watched Status')
-            
-            filepath = CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'
-            index = self.load(filepath,watchedList,channel)
+            self.log('channel: ' + str(channel) + ' self.ExcludeFromReset: ' + str(self.ExcludeFromReset))
+            if str(channel) not in self.ExcludeFromReset:
+                
+                uIndex = int((channel/float(maxChannels))*100)
+                updateDialog.update(uIndex, message='Exiting - Resetting Watched Status')
+                
+                filepath = CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'
+                index = self.load(filepath,watchedList,channel)
             channel = channel +1
         updateDialog.close()
         
@@ -74,7 +78,7 @@ class ResetWatched:
 
     def sendJSON(self, command):
         data = xbmc.executeJSONRPC(command)
-        return unicode(data, 'utf-8', errors='ignore')
+        return data
 
     def load(self,filename,watchedList,channel):
         self.log("RESET CHANNEL " + filename)
@@ -119,9 +123,9 @@ class ResetWatched:
                         ID = int(ID)
                         
                         #if HideYearEpInfo is turned on, episodetitle will be blank for movies.  If it's off, episodetitle will contain an x (movies will have just a year)
-                        debug('chtype = ', chtype)
-                        debug("ADDON.getSetting('HideYearEpInfo') = ", ADDON.getSetting('HideYearEpInfo'))
-                        debug('episodetitle = ', episodetitle)
+                        self.log('chtype = ' + chtype)
+                        self.log("ADDON.getSetting('HideYearEpInfo') = " + ADDON.getSetting('HideYearEpInfo'))
+                        self.log('episodetitle = ' + episodetitle)
                         
                         if chtype == "6":
                             asset = "episode"
@@ -135,7 +139,7 @@ class ResetWatched:
                                  asset = "episode"
                             else:
                                 asset = "movie"
-                        debug('asset = ', asset)
+                        self.log('asset = ' + asset)
                         
                         
                         

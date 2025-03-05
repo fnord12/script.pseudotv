@@ -49,7 +49,7 @@ There are only a few things you need to know in order to control everything. Fir
 * **Auto-off Timer:** The amount of time (in minutes) of idle time before the script is automatically stopped.
 * **Enable Channel Sharing:** Share the same configuration and channel list between multiple computers. If you're using real-time mode (the default) then you can stop watching one show on one computer and pick it up on the other. Or you can have both computers playing the same lists at the same time.
 * **Shared Channels Folder:** If channel sharing is enabled, this is the location available from both computers that will keep the settings and channel information.
-* **Reset Watched Status:** If you don't want your viewing in PSTV to affect your playcounts, Continue Watching lists, etc., enable this.  It will take a little time at the end of the session to restore all your counts to how they were before you started.
+* **Reset Watched Status:** If you don't want your viewing in PSTV to affect your playcounts, Continue Watching lists, etc., enable this.  It will take a little time at the end of the session to restore all your counts to how they were before you started.   If you want to exclude some channels from being reset (i.e. if you want PseudoTV to remember your progress for certain shows), you can input the channel numbers in a comma-separated list.
 
 **Visual Settings -**
 
@@ -125,17 +125,18 @@ Finally: If reporting a problem, first see the [Troubleshooting doc](https://git
 
 ^As with anything you customize, just be sure to make a backup before taking a new release.
 
+8. See release notes docs for how to map a button to jump between two channels (4.5.0) or toggle the EPG row count (4.5.1).
+
 ---
 ### Branches guide
 
-This version is tested in Kodi 18 Leia only.  It will not work in 19 at this time and updating for that is not high on my priority list.
-For older versions, see https://github.com/Steveb1968/script.pseudotv
+This version is tested in Kodi 21 on Windows 11 and Linux Mint.
 
 ---
 ### Credits
 
 **Developer:** Jason102, Steveb, fnord12.<br>
-**Code Additions:** Sranshaft, TheOddLinguist, Canuma, rafaelvieiras.<br>
+**Code Additions:** Sranshaft, TheOddLinguist, Canuma, rafaelvieiras, jlippold, XeXoasz.<br>
 **Skins:** Sranshaft, Zepfan, Steveb.<br>
 **Preset Images:** Jtucker1972.<br>
 **Languages:** CyberXaz, Machine-Sanctum, rafaelvieiras, Eng2Heb.

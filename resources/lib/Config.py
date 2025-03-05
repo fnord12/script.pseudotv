@@ -16,7 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with PseudoTV.  If not, see <http://www.gnu.org/licenses/>.
 
-import xbmc, xbmcgui, xbmcaddon
+# Channel Types
+# 0 - playlist, # 1 - tv network, # 2 - movie studio, # 3 - tv genre
+# 4 - movie genre, 5 - mixed genre, # 6 - single show, # 7 - directory
+
+import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import subprocess, os
 import time, threading
 import datetime
@@ -25,8 +29,8 @@ import random
 
 
 ADDON       = xbmcaddon.Addon(id='script.pseudotv')
-CWD         = ADDON.getAddonInfo('path').decode("utf-8")
-RESOURCE    = xbmc.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8")).decode("utf-8")
+CWD         = ADDON.getAddonInfo('path')
+RESOURCE    = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8"))
 
 sys.path.append(RESOURCE)
 
@@ -82,6 +86,9 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         ADDON_SETTINGS.loadSettings()
         ADDON_SETTINGS.disableWriteOnSave()
+        
+        self.initToggles()
+        
         self.doModal()
         self.log("__init__ return")
 
@@ -106,7 +113,36 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         self.myRules = AdvancedConfig("script.pseudotv.AdvancedConfig.xml", CWD, "default")
         self.log("onInit return")
 
+    def initToggles(self):
+        self.altcolorchannels1 = ADDON.getSetting('altcolorchannels1').split(",")
+        self.altcolorchannels2 = ADDON.getSetting('altcolorchannels2').split(",")
+        self.altcolorchannels3 = ADDON.getSetting('altcolorchannels3').split(",")
+        self.languageChangeChannel = ADDON.getSetting('languageChangeChannel').split(",")
+        self.languageChangeChannel2 = ADDON.getSetting('languageChangeChannel2').split(",")
+        self.UseEpisodeTitleHideTitle = ADDON.getSetting('UseEpisodeTitleHideTitle').split(",")
+        self.UseEpisodeTitleKeepShowTitle = ADDON.getSetting('UseEpisodeTitleKeepShowTitle').split(",")
+        self.HideDirectoryTitle = ADDON.getSetting('HideDirectoryTitle').split(",")
+        self.longBlockChannel = ADDON.getSetting('longBlockChannel').split(",")
+        self.ExcludeFromReset = ADDON.getSetting('ExcludeFromReset').split(",")
 
+        self.toggles = [
+            ["altcolorchannels1", self.altcolorchannels1], 
+            ["altcolorchannels2", self.altcolorchannels2],
+            ["altcolorchannels3", self.altcolorchannels3],
+            ["languageChangeChannel", self.languageChangeChannel],
+            ["languageChangeChannel2", self.languageChangeChannel2],
+            ["UseEpisodeTitleHideTitle", self.UseEpisodeTitleHideTitle],
+            ["UseEpisodeTitleKeepShowTitle", self.UseEpisodeTitleKeepShowTitle], 
+            ["HideDirectoryTitle", self.HideDirectoryTitle], 
+            ["longBlockChannel", self.longBlockChannel],
+            ["ExcludeFromReset", self.ExcludeFromReset]
+        ]
+        
+        self.toggleLen = len(self.toggles)
+        
+        self.log ('TGGLE init self.toggles: ' + str(self.toggles))
+    
+    
     def onFocus(self, controlId):
         pass
 
@@ -124,6 +160,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
                     if dlg.yesno(xbmc.getLocalizedString(190), LANGUAGE(30032)):
                         ADDON_SETTINGS.writeSettings()
+                        self.writeToggleSetting()
 
                         if CHANNEL_SHARING:
                             realloc = ADDON.getSetting('SettingsFolder')
@@ -135,14 +172,24 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             ChannelAction = xbmcgui.Dialog().select("Choose An Action For Channel %d" % curchan,AffectChannelOptions)
             if ChannelAction != -1:
                 if ChannelAction == 0:
-                    CopyToChannel = int(xbmcgui.Dialog().numeric(0,"Copy To (and overwrite) Channel"))
-                    if 1 <= CopyToChannel <= 9999:
-                        self.copyChannel(curchan,CopyToChannel)
+                    result = (xbmcgui.Dialog().numeric(0,"Copy To (and overwrite) Channel"))
+                    if result:
+                        CopyToChannel = int(result)
+                        if 1 <= CopyToChannel <= self.maxNeededChannels:
+                            self.copyChannel(curchan,CopyToChannel)
+                        else:
+                            dialog = xbmcgui.Dialog()
+                            ok = dialog.ok('PseudoTV Config','Channel out of range.')
                 elif ChannelAction == 1:
-                    SwapToChannel = int(xbmcgui.Dialog().numeric(0,"Swap Channel %d with Channel:" % curchan))
-                    if 1 <= SwapToChannel <= 9999:
-                        firstEmpty = self.findFirstEmpty(curchan)
-                        self.swapChannel(curchan,SwapToChannel,firstEmpty)
+                    result = (xbmcgui.Dialog().numeric(0,"Swap Channel %d with Channel:" % curchan))
+                    if result:
+                        SwapToChannel = int(result)
+                        if 1 <= SwapToChannel <= self.maxNeededChannels:
+                            firstEmpty = self.findFirstEmpty(curchan)
+                            self.swapChannel(curchan,SwapToChannel,firstEmpty)
+                        else:
+                            dialog = xbmcgui.Dialog()
+                            ok = dialog.ok('PseudoTV Config','Channel out of range.')
                 elif ChannelAction == 2:
                     firstEmpty = self.findFirstEmpty(curchan)
                     self.insertChannel(curchan,firstEmpty)
@@ -276,6 +323,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             else:
                 if self.madeChanges == 1:
                     ADDON_SETTINGS.writeSettings()
+                    self.writeToggleSetting()
                     if CHANNEL_SHARING:
                         realloc = ADDON.getSetting('SettingsFolder')
                         FileAccess.copy(SETTINGS_LOC + '/settings2.xml', realloc + '/settings2.xml')
@@ -338,8 +386,101 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         self.log("onClick return")
 
+    def writeToggleSetting(self):
+        #called on OK to massage the data into what Kodi needs to save in the Settings file
+        bad_chars = "[]' "
+        
+        self.log('TGGL toggles to write: ' + str(self.toggles))
+        
+        i = 0
+        while i < self.toggleLen:
+            currentToggle = self.toggles[i][0]
+        
+            fixedChannelArray = str(self.toggles[i][1])
+            
+            for c in bad_chars: 
+                fixedChannelArray = fixedChannelArray.replace(c, "")
+                
+            ADDON.setSetting(currentToggle, fixedChannelArray)
+            
+            i += 1
+        
+        
+         
+    def saveToggleSetting(self, currentToggle, fixedChannelArray, i):
+        #called by updateToggles to update the master array - does not write back to settings file
+        
+        fixedChannelArray = list(set(fixedChannelArray))
+        fixedChannelArray = sorted(fixedChannelArray)
+        
+        self.log('TGGL fixedChannelArray: ' + str(fixedChannelArray))
+        
+        self.toggles[i][1] = fixedChannelArray
+        
+        self.log('TGGL toggles updated: ' + str(self.toggles))        
+    
+    def updateToggles(self,origchannel,newchannel,action):
+        #called by Copy and Delete channel
+        self.log('TGGL updateToggles origchannel: ' + str(origchannel) + ' newchannel: ' + str(newchannel) + ' action: ' + action)
+        origchannel = str(origchannel)
+        newchannel = str(newchannel)
+        
+        if action == 'copy':
+            self.log ('TGGL Update pre-copy self.toggles: ' + str(self.toggles))
+            
+            i = 0
+            while i < self.toggleLen:
+                
+                currentToggle = self.toggles[i][0]
+                
+                self.log('TGGL currentToggle: ' + currentToggle)
+                self.log('TGGL currentToggleChannels: ' + str(self.toggles[i][1]))
+                
+                #first clear the toggle from destination channel (newchannel)
+                if newchannel in self.toggles[i][1]:
+                    fixedChannelArray = []
+                    
+                    self.toggles[i][1].remove(newchannel)
+                    self.log('TGGL currentToggleChannels pre-copy clear: ' + str(self.toggles[i][1]))
+                    
+                    self.saveToggleSetting(currentToggle, self.toggles[i][1], i)
+                    
+                #then update the toggles based on what was copied (origchannel)
+                if origchannel in self.toggles[i][1]:
+                    fixedChannelArray = []
+                    
+                    self.toggles[i][1].append(newchannel)
+                    self.log('TGGL currentToggleChannels post append: ' + str(self.toggles[i][1]))
+                    
+                    self.saveToggleSetting(currentToggle, self.toggles[i][1], i)
+                    
+                i += 1
+                    
+        elif action == 'clear':
+            
+            i = 0
+            while i < self.toggleLen:
+                
+                currentToggle = self.toggles[i][0]
+                
+                self.log('TGGL currentToggle: ' + currentToggle)
+                self.log('TGGL currentToggleChannels: ' + str(self.toggles[i][1]))
+                
+                if origchannel in self.toggles[i][1]:
+                    
+                    fixedChannelArray = []
+                    
+                    self.toggles[i][1].remove(origchannel)
+                    self.log('TGGL currentToggleChannels post removal: ' + str(self.toggles[i][1]))
+                    
+                    self.saveToggleSetting(currentToggle, self.toggles[i][1], i)
+                
+                i += 1
+        else:
+            self.log('TGGL updateToggles - invalid action: ' + action)
+    
     def copyChannel(self,origchannel,newchannel):
-        self.log("copyChannel channel " + str(newchannel))
+        self.log("TGGL copyChannel channel from: " + str(origchannel) + ' to: ' + str(newchannel))
         chantype = 9999
         chan = str(origchannel)
         newchan = str(newchannel)
@@ -348,10 +489,10 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         try:
             chantype = int(ADDON_SETTINGS.getSetting("Channel_" + chan + "_type"))
-            self.log("chantype: " + str(chantype))
+            self.log("TGGL chantype: " + str(chantype))
 
         except:
-            self.log("Unable to get channel type")
+            self.log("TGGL Unable to get channel type")
 
         setting1 = "Channel_" + chan + "_1"
         setting2 = "Channel_" + chan + "_2"
@@ -386,6 +527,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         ADDON_SETTINGS.setSetting('Channel_' + newchan + '_changed', 'True')
         self.madeChanges = 1
         self.updateListing(newchannel)
+        self.updateToggles(origchannel,newchannel,'copy')
+        
         self.log("copyChannel return")
 
     def clearChannel(self, curchan):
@@ -404,26 +547,30 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             pass
         self.updateListing(curchan)
         self.madeChanges = 1
+        
+        self.updateToggles(curchan,0,'clear')
+        
         self.log("clearChannel return")
 
-    def swapChannel(self, curchan, swapChannel,firstEmpty):
+    def swapChannel(self, curchan,swapToChannel,firstEmpty):
         self.log("swapChannel channel " + str(curchan))
+        
         self.copyChannel(curchan,firstEmpty)
-        self.copyChannel(swapChannel,curchan)
-        self.copyChannel(firstEmpty,swapChannel)
+        self.copyChannel(swapToChannel,curchan)
+        self.copyChannel(firstEmpty,swapToChannel)
         self.clearChannel(firstEmpty)
         self.log("swapChannel return")
 
-    def insertChannel(self,curchan,lastchan):
-        self.log("insertChannel channel " + str(curchan))
-        for i in range(lastchan, curchan-1, -1):
+    def insertChannel(self,curchan,firstEmpty):
+        self.log("TGGL insertChannel channel " + str(curchan))
+        for i in range(firstEmpty, curchan-1, -1):
             self.copyChannel(i,i+1)
         self.clearChannel(curchan)
         self.log("insertChannel return")
 
-    def deleteChannel(self,curchan,lastchan):
+    def deleteChannel(self,curchan,firstEmpty):
         self.log("deleteChannel channel " + str(curchan))
-        for i in range(curchan+1, lastchan):
+        for i in range(curchan+1, firstEmpty):
             self.copyChannel(i, i-1)
             self.clearChannel(i)
         self.madeChanges = 1
@@ -434,7 +581,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
     def getSmartPlaylistName(self, fle):
         self.log("getSmartPlaylistName " + fle)
-        fle = xbmc.translatePath(fle)
+        fle = xbmcvfs.translatePath(fle)
 
         try:
             xml = FileAccess.open(fle, "r")
@@ -661,7 +808,6 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
 
         return ''
 
-
     def getChanTypeLabel(self, chantype):
         if chantype == 0:
             return LANGUAGE(30181)
@@ -730,6 +876,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
                     return i
                     break
             except:
+                self.log("Exception finding first empty")
                 return i
                 break
         self.log("findFirstEmpty return")

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with PseudoTV.  If not, see <http://www.gnu.org/licenses/>.
 
-import xbmc, xbmcgui, xbmcaddon
+import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 import subprocess, os
 import time, threading
 import datetime, traceback
@@ -26,7 +26,9 @@ from Globals import *
 from Channel import Channel
 from FileAccess import FileAccess
 
-
+#Control(111) refers to the control *group* for the first row of the EPG, 112 is row2, etc.
+#Within each control group are the buttons, with control IDs in the 3000s (dynamically generated)
+#Control(120) is the thin blue vertical "time bar"
 
 class EPGWindow(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
@@ -55,10 +57,10 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         self.altcolorchannels3 = ADDON.getSetting('altcolorchannels3').split(",")
         
         # Set media path.
-        if os.path.exists(xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media'))):
-            self.mediaPath = xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media' + '/'))
+        if os.path.exists(xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media'))):
+            self.mediaPath = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'skins', xbmc.getSkinDir(), 'media' + '/'))
         else:
-            self.mediaPath = xbmc.translatePath(os.path.join(CWD, 'resources', 'skins', 'default', 'media' + '/'))
+            self.mediaPath = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'skins', 'default', 'media' + '/'))
 
         self.log('Media Path is ' + self.mediaPath)
 
@@ -243,6 +245,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         timex, timey = self.getControl(120).getPosition()
         timew = self.getControl(120).getWidth()
         timeh = self.getControl(120).getHeight()
+        
         basecur = curchannel
         self.toRemove.append(self.currentTimeBar)
         EpgLogo = ADDON.getSetting('ShowEpgLogo')
@@ -265,6 +268,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             try:
                 self.getControl(311 + i).setLabel(str(curchannel))
             except:
+                self.log('setChannelButtons - exception when seeing if i was in range')
                 pass
 
             try:
@@ -273,6 +277,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                     if not FileAccess.exists(self.channelLogos + ascii(self.MyOverlayWindow.channels[curchannel - 1].name) + ".png"):
                         self.getControl(321 + i).setImage(IMAGES_LOC + "Default.png")
             except:
+                self.log('setChannelButtons - exception when checking EpgLogo')             
                 pass
 
             curchannel = self.MyOverlayWindow.fixChannel(curchannel + 1)
@@ -291,10 +296,13 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         try:
             self.removeControls(self.toRemove)
         except:
+            self.log('setChannelButtons - exception when removing control, trying further')    
+            
             for cntrl in self.toRemove:
                 try:
                     self.removeControl(cntrl)
                 except:
+                    self.log('setChannelButtons - exception when removing control, failed trying further')
                     pass
 
         self.addControls(myadds)
@@ -366,8 +374,9 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                 # Find the show that was running at the given time
                 # Use the current time and show offset to calculate it
                 # At timedif time, channelShowPosition was playing at channelTimes
+                
                 # The only way this isn't true is if the current channel is curchannel since
-                # it could have been fast forwarded or rewinded (rewound)?
+                # it could have been fast forwarded or rewound? so we first have to check its position
                 if curchannel == self.MyOverlayWindow.currentChannel:
                     playlistpos = xbmc.PlayList(xbmc.PLAYLIST_MUSIC).getposition()
                     videotime = xbmc.Player().getTime()
@@ -552,7 +561,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             try:
                 self.close()
             except:
-                self.log("Error closing", xbmc.LOGERROR)
+                self.log("Exception error closing", xbmc.LOGERROR)
 
             self.MyOverlayWindow.sleepTimeValue = 1
             self.MyOverlayWindow.startSleepTimer()
@@ -569,6 +578,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             self.removeControl(self.currentTimeBar)
             self.MyOverlayWindow.startSleepTimer()
         except:
+            self.log("Exception closing EPG")
             pass
 
         self.close()
@@ -576,11 +586,13 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
 
     def onControl(self, control):
         self.log('onControl')
-
-
-    # Run when a show is selected, so close the epg and run the show
-    def onClick(self, controlid):
-        self.log('onClick')
+        
+    
+    # Run when a mouse click on a show on the EPG is detected, so close the epg and run the show
+    # Not working in Python 3 / Kodi 21.2 and it prevents normal selection via Enter key
+    # so it's been renamed, should be onClick
+    def NonClick(self, controlid):
+        self.log('onClick button '+ str(controlid))
 
         if self.actionSemaphore.acquire(False) == False:
             self.log('Unable to get semaphore')
@@ -589,19 +601,37 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
         lastaction = time.time() - self.lastActionTime
 
         if lastaction >= 2:
+            
             try:
-                selectedbutton = self.getControl(controlid)
+               selectedbutton = self.getControl(controlid)
+               selectedbuttonlabel = self.getControl(controlid).getLabel()
+               
+               pformat(selectedbutton)
+               
+               self.log('selectedbutton: ' + selectedbutton)
+             
+               
+               
+               self.log('selectedbuttonlabel = ' + selectedbuttonlabel)
+                
+                
             except:
-                self.actionSemaphore.release()
-                self.log('onClick unknown controlid ' + str(controlid))
-                return
+               self.actionSemaphore.release()
+               self.log('onClick Exception unknown controlid ' + str(controlid))
+               return
 
+            #finding the box in the grid, e,g. i:0, x:0 is the top left box in the EPG
             for i in range(self.rowCount):
                 for x in range(len(self.channelButtons[i])):
                     mycontrol = 0
                     mycontrol = self.channelButtons[i][x]
+                    mycontrolLabel = mycontrol.getLabel()
+                    self.log('mycontrolLabel = ' + mycontrolLabel)
 
+                    self.log('mycontrol: ' + str(mycontrol))
+            
                     if selectedbutton == mycontrol:
+                    #if selectedbuttonlabel == mycontrolLabel: (hack that only works if labels are unique - unlikely)
                         self.focusRow = i
                         self.focusIndex = x
                         self.selectShow()
@@ -610,10 +640,21 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
                         self.actionSemaphore.release()
                         self.log('onClick found button return')
                         return
+                    else:
+                        self.log('button row ' + str(i) + ' button cell ' + str(x) + ' does not match')
 
+                else:
+                    self.log('tried all of row ' + str(i))
+                
+            else:
+                self.log('tried all buttons?')
+            
             self.lastActionTime = time.time()
             self.closeEPG()
 
+        else:
+            self.log('EPGWindow onClick lastaction less than 2')
+        
         self.actionSemaphore.release()
         self.log('onClick return')
 
@@ -852,13 +893,20 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
     # using the currently selected button, play the proper shows
     def selectShow(self):
         self.log('selectShow')
+        #focusRow is set in onClick based on brute force comparison to clicked button
+        #values below get dimensions of the row
+        
         basex, basey = self.getControl(111 + self.focusRow).getPosition()
         baseh = self.getControl(111 + self.focusRow).getHeight()
         basew = self.getControl(111 + self.focusRow).getWidth()
+        
+        #focusIndex is the cell (show/movie) on the focusRow
         # use the selected time to set the video
         left, top = self.channelButtons[self.focusRow][self.focusIndex].getPosition()
         width = self.channelButtons[self.focusRow][self.focusIndex].getWidth()
         left = left - basex + (width / 2)
+        
+        #5400 = 90 minutes, the amount represented on the EPG at one time
         starttime = self.shownTime + (left / (basew / 5400.0))
         chnoffset = self.focusRow - 2
         newchan = self.centerChannel

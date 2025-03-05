@@ -1,9 +1,34 @@
-2.5.0 (fnord12)
+4.5.4 (XeXoasz)
+    Added 4:3 Channel Bug Positions.
+
+4.5.3 (jlippold)
+	Press Page Up or Page Down to navigate the EPG.
+
+4.5.2 (fnord12)
+	Color options in EPG
+	Ability to choose between 3, 6, or 9 rows in the EPG
+	Ability to specify that a channel always choose a certain language track
+	Workaround for when PSTV can't create a watermark
+	Better UI for Don't Include A Show and Channel Logo advanced rules
+
+4.5.1 (fnord12)
+	Fix for Reset Problem for Realtime mode
+	Configure plots for Directory episodes
+	Fix for Interleaved Channels starting episode
+	Fix for a case where PSTV was skipping videos
+	Lots of new options for EPG configurability:
+	--Show Episode Title instead of Show Title (with options)
+	--Hide Title for Directory channels
+	--Option to display nothing in EPG for small blocks
+	--Option to show a single long block instead of individual blocks (e.g. to just have your music video channels say "MTV")
+
+4.5.0 (fnord12)
 	Fully baked Reset Watched.  
 	Startup Channel.  
 	Additional new settings and performance tweaks.  
 	A large-ish update; see Release Notes for details.
-2.4.5+ (steveb & fnord12)
+
+3.0 (steveb & fnord12)
 	Initial Reset Watched.
 	Admin UI update.
 	Several other smaller fixes and improvements.

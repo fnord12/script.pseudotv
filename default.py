@@ -19,13 +19,14 @@
 import xbmc
 import xbmcgui
 import xbmcaddon
+import xbmcvfs
 import sys
 import os
 
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
-CWD = ADDON.getAddonInfo('path').decode("utf-8")
-RESOURCE = xbmc.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8")).decode("utf-8")
+CWD = ADDON.getAddonInfo('path')
+RESOURCE = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8"))
 
 sys.path.append(RESOURCE)
 

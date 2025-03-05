@@ -32,7 +32,7 @@ class ChannelListThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.myOverlay = None
-        sys.setcheckinterval(25)
+        sys.setswitchinterval(25)
         self.chanlist = ChannelList()
         self.paused = False
         self.fullUpdating = True

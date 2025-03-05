@@ -6,14 +6,14 @@ import xml.etree.ElementTree as ET
 import xbmc, xbmcaddon, xbmcvfs
 
 ADDON = xbmcaddon.Addon(id='script.pseudotv')
-SkinPath = xbmc.translatePath('special://skin')
-ScriptPath = xbmc.translatePath(ADDON.getAddonInfo('path'))
+SkinPath = xbmcvfs.translatePath('special://skin')
+ScriptPath = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
 SourceFontPath = os.path.join(ScriptPath, 'resources', 'fonts', 'NotoSans-Regular.ttf')
 ListDir = os.listdir(SkinPath)
 
-class PCParser(ET.XMLTreeBuilder):
+class PCParser(ET.XMLParser):
    def __init__(self):
-       ET.XMLTreeBuilder.__init__(self)
+       ET.XMLparser.__init__(self)
        self._parser.CommentHandler = self.handle_comment
 
    def handle_comment(self, data):

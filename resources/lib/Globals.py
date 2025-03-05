@@ -37,15 +37,15 @@ def debug(msg, *args):
         else:
             xbmc.log(u"PSTV: {0}#{1}#".format(msg, txt).encode('ascii','xmlcharrefreplace'), xbmc.LOGDEBUG)
     except:
-        print ("PSTV: Error in Debugoutput")
-        print (msg)
-        print (args)
+        print("PSTV: Error in Debugoutput")
+        print(msg)
+        print(args)
 
 ADDON = xbmcaddon.Addon(id='script.pseudotv')
 ADDON_ID = ADDON.getAddonInfo('id')
 ADDON_NAME = ADDON.getAddonInfo('name')
 LANGUAGE = ADDON.getLocalizedString
-CWD = ADDON.getAddonInfo('path').decode("utf-8")
+CWD = ADDON.getAddonInfo('path')
 VERSION = ADDON.getAddonInfo('version')
 ICON = ADDON.getAddonInfo('icon')
 
@@ -56,17 +56,25 @@ def log(msg, level = xbmc.LOGDEBUG):
         pass
 
 
-def uni(string, encoding = 'utf-8'):
-    if isinstance(string, basestring):
-        if not isinstance(string, unicode):
-           string = unicode(string, encoding)
-
+def uni(string):
+    #not needed in Python 3 but keeping it 'just in case...'
+    
+    #string = string.encode('utf-8', 'ignore')
+    
+    #if isinstance(string, str):
+    #    if not isinstance(string, unicode):
+    #       string = unicode(string, encoding)
+    
     return string
 
 def ascii(string):
-    if isinstance(string, basestring):
-        if isinstance(string, unicode):
-           string = string.encode('ascii', 'ignore')
+    #not needed in Python 3 but keeping it 'just in case...'
+    
+    #string = string.encode('ascii', 'ignore')
+    
+    #if isinstance(string, str):
+    #    if isinstance(string, unicode):
+    #       string = string.encode('ascii', 'ignore')
 
     return string
 
@@ -84,22 +92,22 @@ MODE_RANDOM = 8
 MODE_REALTIME = 16
 MODE_STARTMODES = MODE_RANDOM | MODE_REALTIME | MODE_RESUME
 
-SETTINGS_LOC = ADDON.getAddonInfo('profile').decode("utf-8")
+SETTINGS_LOC = ADDON.getAddonInfo('profile')
 CHANNEL_SHARING = False
-LOCK_LOC = xbmc.translatePath(os.path.join(SETTINGS_LOC, 'cache' + '/'))
+LOCK_LOC = xbmcvfs.translatePath(os.path.join(SETTINGS_LOC, 'cache' + '/'))
 
 if ADDON.getSetting('ChannelSharing') == "true":
     CHANNEL_SHARING = True
-    LOCK_LOC = xbmc.translatePath(os.path.join(ADDON.getSetting('SettingsFolder'), 'cache' + '/'))
+    LOCK_LOC = xbmcvfs.translatePath(os.path.join(ADDON.getSetting('SettingsFolder'), 'cache' + '/'))
 
-IMAGES_LOC = xbmc.translatePath(os.path.join(CWD, 'resources', 'images' + '/'))
-LOGOS_LOC = xbmc.translatePath(os.path.join(CWD, 'resources', 'logos' + '/'))
+IMAGES_LOC = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'images' + '/'))
+LOGOS_LOC = xbmcvfs.translatePath(os.path.join(CWD, 'resources', 'logos' + '/'))
 CHANNELS_LOC = os.path.join(SETTINGS_LOC, 'cache' + '/')
 GEN_CHAN_LOC = os.path.join(CHANNELS_LOC, 'generated' + '/')
 MADE_CHAN_LOC = os.path.join(CHANNELS_LOC, 'stored' + '/')
-CHANNELBUG_LOC = xbmc.translatePath(os.path.join(CHANNELS_LOC, 'ChannelBug' + '/'))
+CHANNELBUG_LOC = xbmcvfs.translatePath(os.path.join(CHANNELS_LOC, 'ChannelBug' + '/'))
 
-CHANNELBUG_POS =[[19,19],[1695,19],[1695,952],[19,952]]
+CHANNELBUG_POS = [[19,19], [1695,19], [1695,952], [19,952], [250,19], [1483,19], [1483,952], [250,952]]
 
 SHORT_CLIP_ENUM = [15, 30, 60, 90, 120, 180, 240, 300, 360]
 INFO_DUR = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -151,6 +159,8 @@ ACTION_PAGEUP = 5
 ACTION_PAGEDOWN = 6
 ACTION_SELECT_ITEM = 7
 ACTION_SELECT_ITEM2 = 100 #Mouse Left Click
+ACTION_MOUSE_RIGHT_CLICK = 101 #Mouse Right Click
+ACTION_MOUSE_MOVE = 107
 ACTION_PREVIOUS_MENU = (9, 10, 92, 216, 247, 257, 275, 61467, 61448,)
 ACTION_SHOW_INFO = 11
 ACTION_STOP = 13
@@ -158,7 +168,6 @@ ACTION_OSD = 117
 ACTION_NUMBER_0 = 58
 ACTION_NUMBER_9 = 67
 ACTION_INVALID = 999
-ACTION_MOUSE_RIGHT_CLICK = 101 #Mouse Right Click
 CONTEXT_MENU = 117
 ACTION_NEXT_PICTURE = 28
 ACTION_PREV_PICTURE = 29
