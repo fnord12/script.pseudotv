@@ -222,7 +222,7 @@ class FileLock:
         self.isExiting = False
         self.grabSemaphore = threading.BoundedSemaphore()
         self.listSemaphore = threading.BoundedSemaphore()
-        self.log("FileLock instance")
+        self.log("FileLock init")
 
 
     def close(self):

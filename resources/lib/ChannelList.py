@@ -230,6 +230,7 @@ class ChannelList:
             if needsreset:
                 self.channels[channel - 1].isSetup = False
         except:
+            self.log("Exception in checking if reset needed")
             pass
 
         # If possible, use an existing playlist
@@ -239,9 +240,9 @@ class ChannelList:
             try:
                 self.channels[channel - 1].totalTimePlayed = int(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True))
                 createlist = True
-
+                self.log('createlist set to True')
                 if self.background == False:
-                    self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30166)) % (str(channel)), LANGUAGE(30171), '')
+                    self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30166)) % (str(channel)) + '...' + LANGUAGE(30171)) 
 
                 if self.channels[channel - 1].setPlaylist(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u') == True:
                     self.channels[channel - 1].isValid = True
@@ -251,28 +252,38 @@ class ChannelList:
                     # If this channel has been watched for longer than it lasts, reset the channel
                     if self.channelResetSetting == 0 and self.channels[channel - 1].totalTimePlayed < self.channels[channel - 1].getTotalDuration():
                         createlist = False
-
-                    if self.channelResetSetting > 0 and self.channelResetSetting < 4:
+                        
+                    elif self.channelResetSetting > 0 and self.channelResetSetting < 4:
                         timedif = time.time() - self.lastResetTime
-
                         if self.channelResetSetting == 1 and timedif < (60 * 60 * 24):
                             createlist = False
 
-                        if self.channelResetSetting == 2 and timedif < (60 * 60 * 24 * 7):
+                        elif self.channelResetSetting == 2 and timedif < (60 * 60 * 24 * 7):
                             createlist = False
 
-                        if self.channelResetSetting == 3 and timedif < (60 * 60 * 24 * 30):
+                        elif self.channelResetSetting == 3 and timedif < (60 * 60 * 24 * 30):
                             createlist = False
 
-                        if timedif < 0:
+                        elif timedif < 0:
                             createlist = False
+                            
+                        else:
+                            self.log('Unexpected reset condition')
 
-                    if self.channelResetSetting == 4:
+                    elif self.channelResetSetting == 4:
+                        self.log('Should not be resetting')
                         createlist = False
+                    else:
+                        self.log('No reset condition met')
+                        
             except:
+                self.log('Exception determining if reset is needed')
                 pass
 
         if createlist or needsreset:
+            self.log('createlist= ' + str(createlist))
+            self.log('needsreset= ' + str(needsreset))
+            
             self.channels[channel - 1].isValid = False
 
             if makenewlist:
