@@ -101,7 +101,6 @@ class MyPlayer(xbmc.Player):
         self.log('entering getDetails')
         activePlayers ='{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}'
         json_query = xbmc.executeJSONRPC(activePlayers)
-        json_query = unicode(json_query, 'utf-8', errors='ignore')
         json_response = json.loads(json_query)
         activePlayerID = json_response['result'][0]['playerid']
         details_query_dict = {  "jsonrpc": "2.0",
@@ -113,7 +112,6 @@ class MyPlayer(xbmc.Player):
                                 "id": 1}
         details_query_string = json.dumps(details_query_dict)
         json_query = xbmc.executeJSONRPC(details_query_string)
-        json_query = unicode(json_query, 'utf-8', errors='ignore')
         json_response = json.loads(json_query)
         if json_response.has_key('result') and json_response['result'] != None:
             self.selected_audio_stream = json_response['result']['currentaudiostream']
