@@ -2,6 +2,7 @@
     OS differentiation for FFPROBE
     Logo capitalization - thanks bornagainpenguin
     Secondary Channel bug position
+    Fix for channel reset
 
 5.0.0
     Updated for Python 3 / Kodi 21
