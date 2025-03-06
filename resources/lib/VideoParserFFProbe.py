@@ -35,11 +35,17 @@ class VideoParserFFProbe:
     def determineLength(self, filename):
         
         
-        
-        result = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries",
+        if os.name == "nt":
+          
+            result = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries",
                                  "format=duration", "-of", 
                                  "default=noprint_wrappers=1:nokey=1", filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-        
+                                 
+        else:
+            
+            result = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries",
+                                 "format=duration", "-of", 
+                                 "default=noprint_wrappers=1:nokey=1", filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         
         tempDur = str(result.stdout)
         self.log ('result.stdout: ' + tempDur)
