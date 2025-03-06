@@ -1,7 +1,7 @@
 5.0.1
-    OS differntiation for FFPROBE
+    OS differentiation for FFPROBE
     Logo capitalization - thanks bornagainpenguin
-    
+    Secondary Channel bug position
 
 5.0.0
     Updated for Python 3 / Kodi 21
