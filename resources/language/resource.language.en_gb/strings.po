@@ -960,3 +960,11 @@ msgstr ""
 msgctxt "#30237"
 msgid "Write to Debugger"
 msgstr ""
+
+msgctxt "#30238"
+msgid "Secondary Watermark Channels"
+msgstr ""
+
+msgctxt "#30239"
+msgid "Secondary Watermark Position"
+msgstr ""

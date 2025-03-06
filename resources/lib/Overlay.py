@@ -341,6 +341,8 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.log('Show info label on channel change is ' + str(self.infoOnChange) + str(self.infoDuration))
         self.showChannelBug = ADDON.getSetting("ShowChannelBug") == "true"
         self.channelBugPosition = CHANNELBUG_POS[int(ADDON.getSetting("ChannelBugPosition"))]
+        self.SecondaryBugChannels = ADDON.getSetting('SecondaryBugChannels').split(",")
+        self.SecondaryBugPosition = CHANNELBUG_POS[int(ADDON.getSetting("SecondaryBugPosition"))]
         self.log('Show channel bug - ' + str(self.showChannelBug))
         self.forceReset = ADDON.getSetting('ForceChannelReset') == "true"
         self.StartChannel = ADDON.getSetting('StartChannel')
@@ -807,7 +809,7 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
             xbmc.sleep(self.channelDelay)
             self.showInfo(self.infoDuration)
 
-        self.setChannelBug()
+        self.setChannelBug(channel)
 
         if xbmc.getCondVisibility('Player.ShowInfo'):
             json_query = '{"jsonrpc": "2.0", "method": "Input.Info", "id": 1}'
@@ -848,9 +850,18 @@ class TVOverlay(xbmcgui.WindowXMLDialog):
         self.channelLabelTimer.start()
         self.startNotificationTimer()
 
-    def setChannelBug(self):
-        posx = self.channelBugPosition[0]
-        posy = self.channelBugPosition[1]
+    def setChannelBug(self, channel):
+        
+        self.log('Channel: ' + str(channel) + ' SecondaryBugChannels: ' + str(self.SecondaryBugChannels))
+        
+        if str(channel) in self.SecondaryBugChannels:
+            self.log('Secondary channels found')
+            posx = self.SecondaryBugPosition[0]
+            posy = self.SecondaryBugPosition[1]
+        else:   
+            self.log('Secondary channels NOT found')
+            posx = self.channelBugPosition[0]
+            posy = self.channelBugPosition[1]
 
         if self.showChannelBug:
             try:
