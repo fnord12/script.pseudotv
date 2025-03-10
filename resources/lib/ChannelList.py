@@ -114,7 +114,8 @@ class ChannelList:
         self.background = False
 
         if self.backgroundUpdating > 0 and self.myOverlay.isMaster == True:
-            makenewlists = True
+           self.log('SETUPCHANNEL backgroundUpdating > 0 and myOverlay.isMaster == True, setting makenewlists=True')
+           makenewlists = True
 
         # Go through all channels, create their arrays, and setup the new playlist
         for i in range(self.maxChannels):
@@ -138,6 +139,7 @@ class ChannelList:
 
         if foundvalid == False and makenewlists == False:
             for i in range(self.maxChannels):
+                self.log('SETUPCHANNEL foundvalid == false')
                 self.updateDialogProgress = i * 100 // self.enteredChannelCount
                 self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30168)) % (str(i + 1)) + '...' + LANGUAGE(30165))
                 self.setupChannel(i + 1, False, True, False)
@@ -240,7 +242,7 @@ class ChannelList:
             try:
                 self.channels[channel - 1].totalTimePlayed = int(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True))
                 createlist = True
-                self.log('createlist set to True')
+                self.log('SETUPCHANNEL createlist set to True')
                 if self.background == False:
                     self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30166)) % (str(channel)) + '...' + LANGUAGE(30171)) 
 
@@ -248,9 +250,10 @@ class ChannelList:
                     self.channels[channel - 1].isValid = True
                     self.channels[channel - 1].fileName = CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'
                     returnval = True
-
+                    self.log('SETUPCHANNEL setPlaylist check')
                     # If this channel has been watched for longer than it lasts, reset the channel
                     if self.channelResetSetting == 0 and self.channels[channel - 1].totalTimePlayed < self.channels[channel - 1].getTotalDuration():
+                        self.log('SETUPCHANNEL totalTimePlayed ok')
                         createlist = False
                         
                     elif self.channelResetSetting > 0 and self.channelResetSetting < 4:
@@ -268,28 +271,32 @@ class ChannelList:
                             createlist = False
                             
                         else:
-                            self.log('Unexpected reset condition')
+                            self.log('SETUPCHANNEL Unexpected reset condition')
 
                     elif self.channelResetSetting == 4:
-                        self.log('Should not be resetting')
+                        self.log('SETUPCHANNEL Should not be resetting')
                         createlist = False
                     else:
-                        self.log('No reset condition met')
+                        self.log('SETUPCHANNEL No reset condition met')
                         
             except:
-                self.log('Exception determining if reset is needed')
+                self.log('SETUPCHANNEL Exception determining if reset is needed')
                 pass
 
+        self.log('SETUPCHANNEL createlist= ' + str(createlist))
+        self.log('SETUPCHANNEL needsreset= ' + str(needsreset))
+        self.log('SETUPCHANNEL append= ' + str(append))
+        self.log('SETUPCHANNEL makenewlist= ' + str(makenewlist))
+        
         if createlist or needsreset:
-            self.log('createlist= ' + str(createlist))
-            self.log('needsreset= ' + str(needsreset))
-            
+            self.log('SETUPCHANNEL createlist or needsreset')
             self.channels[channel - 1].isValid = False
 
             if makenewlist:
                 try:
                     os.remove(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u')
                 except:
+                    self.log('SETUPCHANNEL Exception trying to remove channel ' + str(channel))
                     pass
 
                 append = False
@@ -298,6 +305,7 @@ class ChannelList:
                     ADDON_SETTINGS.setSetting('LastResetTime', str(int(time.time())))
 
         if append == False:
+            self.log('SETUPCHANNEL append == False 1')
             if chtype == 6 and chsetting2 == str(MODE_ORDERAIRDATE):
                 self.channels[channel - 1].mode = MODE_ORDERAIRDATE
 
@@ -311,6 +319,7 @@ class ChannelList:
                     self.channels[channel - 1].mode |= MODE_RANDOM
 
         if ((createlist or needsreset) and makenewlist) or append:
+            self.log('SETUPCHANNEL ((createlist or needsreset) and makenewlist) or append')
             if self.background == False:
                 self.updateDialogProgress = (channel - 1) * 100 // self.enteredChannelCount
                 self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30168)) % (str(channel)) + '...' + ''.join(LANGUAGE(30172)))
@@ -334,11 +343,13 @@ class ChannelList:
 
         # Don't clear history when appending channels
         if self.background == False and append == False and self.myOverlay.isMaster:
+            self.log('SETUPCHANNEL Dont clear history when appending channels')
             self.updateDialogProgress = (channel - 1) * 100 // self.enteredChannelCount
             self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30166)) % (str(channel)) + '...' + ''.join(LANGUAGE(30173)))
             self.clearPlaylistHistory(channel)
 
         if append == False:
+            self.log('SETUPCHANNEL append == False 2')
             self.runActions(RULES_ACTION_BEFORE_TIME, channel, self.channels[channel - 1])
 
             if self.channels[channel - 1].mode & MODE_ALWAYSPAUSE > 0:
@@ -362,8 +373,10 @@ class ChannelList:
         self.channels[channel - 1].name = self.getChannelName(chtype, chsetting1)
         
         if ((createlist or needsreset) and makenewlist) and returnval:
+            self.log('SETUPCHANNEL ((createlist or needsreset) and makenewlist) and returnval')
             self.runActions(RULES_ACTION_FINAL_MADE, channel, self.channels[channel - 1])
         else:
+            self.log('SETUPCHANNEL NOT ((createlist or needsreset) and makenewlist) and returnval')
             self.runActions(RULES_ACTION_FINAL_LOADED, channel, self.channels[channel - 1])
 
         return returnval
