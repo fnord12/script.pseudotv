@@ -226,6 +226,7 @@ class ChannelList:
         self.channels[channel - 1].loadRules(channel)
         self.runActions(RULES_ACTION_START, channel, self.channels[channel - 1])
 
+        # Don't load if we need to reset anyway
         try:
             needsreset = ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_changed') == 'True'
 
@@ -237,7 +238,7 @@ class ChannelList:
 
         # If possible, use an existing playlist
         # Don't do this if we're appending an existing channel
-        # Don't load if we need to reset anyway
+        
         if FileAccess.exists(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u') and append == False and needsreset == False:
             try:
                 self.channels[channel - 1].totalTimePlayed = int(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True))
@@ -305,18 +306,34 @@ class ChannelList:
                     ADDON_SETTINGS.setSetting('LastResetTime', str(int(time.time())))
 
         if append == False:
-            self.log('SETUPCHANNEL append == False 1')
+            self.log('SETUPCHANNEL append == False 1.')
+            self.log('SETUPCHANNEL channel start mode = ' + str(self.channels[channel - 1].mode))
+            
             if chtype == 6 and chsetting2 == str(MODE_ORDERAIRDATE):
                 self.channels[channel - 1].mode = MODE_ORDERAIRDATE
-
+            
+            
+            
             # if there is no start mode in the channel mode flags, set it to the default
             if self.channels[channel - 1].mode & MODE_STARTMODES == 0:
+                
+                #replacing bitwise assignment
+                if self.startMode == 0:
+                    self.channels[channel - 1].mode = 0
+                elif self.startMode == 1:
+                    self.channels[channel - 1].mode = 1
+                elif self.startMode == 2:
+                    self.channels[channel - 1].mode = 2
+                
+                '''
                 if self.startMode == 0:
                     self.channels[channel - 1].mode |= MODE_RESUME
                 elif self.startMode == 1:
                     self.channels[channel - 1].mode |= MODE_REALTIME
                 elif self.startMode == 2:
                     self.channels[channel - 1].mode |= MODE_RANDOM
+                '''    
+            self.log('SETUPCHANNEL final channel start mode = ' + str(self.channels[channel - 1].mode))
 
         if ((createlist or needsreset) and makenewlist) or append:
             self.log('SETUPCHANNEL ((createlist or needsreset) and makenewlist) or append')
