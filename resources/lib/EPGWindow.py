@@ -343,7 +343,7 @@ class EPGWindow(xbmcgui.WindowXMLDialog):
             del self.channelButtons[row][:]
 
             # if the channel is paused, then only 1 button needed
-            if self.MyOverlayWindow.channels[curchannel - 1].isPaused:
+            if (self.MyOverlayWindow.channels[curchannel - 1].isPaused) and (curchannel is not self.MyOverlayWindow.currentChannel):
                 if str(curchannel) in self.altcolorchannels1:
                     self.channelButtons[row].append(xbmcgui.ControlButton(basex, basey, basew, baseh, self.MyOverlayWindow.channels[curchannel - 1].getCurrentTitle() + " (paused)", focusTexture=self.textureButtonFocus, noFocusTexture=self.textureButtonNoFocusAlt1, alignment=4, font=self.textfont, textColor=self.textcolor, shadowColor='0xAA000000', focusedColor=self.focusedcolor))
                 
