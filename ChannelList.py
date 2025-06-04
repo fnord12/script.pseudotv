@@ -240,8 +240,8 @@ class ChannelList:
         # Don't do this if we're appending an existing channel
         
         if FileAccess.exists(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u') and append == False and needsreset == False:
-            try:
-                self.channels[channel - 1].totalTimePlayed = int(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True))
+            #try:
+                self.channels[channel - 1].totalTimePlayed = int(float(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True)))
                 createlist = True
                 self.log('SETUPCHANNEL createlist set to True')
                 if self.background == False:
@@ -280,9 +280,9 @@ class ChannelList:
                     else:
                         self.log('SETUPCHANNEL No reset condition met')
                         
-            except:
-                self.log('SETUPCHANNEL Exception determining if reset is needed')
-                pass
+            #except:
+            #    self.log('SETUPCHANNEL Exception determining if reset is needed')
+            #    pass
 
         self.log('SETUPCHANNEL createlist= ' + str(createlist))
         self.log('SETUPCHANNEL needsreset= ' + str(needsreset))
@@ -294,11 +294,11 @@ class ChannelList:
             self.channels[channel - 1].isValid = False
 
             if makenewlist:
-                try:
-                    os.remove(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u')
-                except:
-                    self.log('SETUPCHANNEL Exception trying to remove channel ' + str(channel))
-                    pass
+                #try:
+                os.remove(xbmcvfs.translatePath(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'))
+                #except:
+                #    self.log('SETUPCHANNEL Exception trying to remove channel ' + str(channel))
+                #    pass
 
                 append = False
 
@@ -319,11 +319,11 @@ class ChannelList:
                 
                 #replacing bitwise assignment
                 if self.startMode == 0:
-                    self.channels[channel - 1].mode = 0
+                    self.channels[channel - 1].mode = MODE_RESUME
                 elif self.startMode == 1:
-                    self.channels[channel - 1].mode = 1
+                    self.channels[channel - 1].mode = MODE_REALTIME
                 elif self.startMode == 2:
-                    self.channels[channel - 1].mode = 2
+                    self.channels[channel - 1].mode = MODE_RANDOM
                 
                 '''
                 if self.startMode == 0:
@@ -342,11 +342,13 @@ class ChannelList:
                 self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30168)) % (str(channel)) + '...' + ''.join(LANGUAGE(30172)))
 
             if self.makeChannelList(channel, chtype, chsetting1, chsetting2, append) == True:
+                self.log('SETUPCHANNEL makeChannelList is true') 
                 if self.channels[channel - 1].setPlaylist(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u') == True:
                     returnval = True
                     self.channels[channel - 1].fileName = CHANNELS_LOC + 'channel_' + str(channel) + '.m3u'
                     self.channels[channel - 1].isValid = True
 
+                    #if we made a new channel and append = false, write the time played as 0
                     # Don't reset variables on an appending channel
                     if append == False:
                         self.channels[channel - 1].totalTimePlayed = 0
@@ -360,7 +362,7 @@ class ChannelList:
 
         # Don't clear history when appending channels
         if self.background == False and append == False and self.myOverlay.isMaster:
-            self.log('SETUPCHANNEL Dont clear history when appending channels')
+            self.log('SETUPCHANNEL Not appending so OK to clear history')
             self.updateDialogProgress = (channel - 1) * 100 // self.enteredChannelCount
             self.updateDialog.update(self.updateDialogProgress, ''.join(LANGUAGE(30166)) % (str(channel)) + '...' + ''.join(LANGUAGE(30173)))
             self.clearPlaylistHistory(channel)
@@ -501,10 +503,12 @@ class ChannelList:
         fileList = []
 
         if chtype == 7:
+            self.log('makeChannelList directory channel')
             fileList = self.createDirectoryPlaylist(setting1, channel)
             israndom = True
         else:
             if chtype == 0:
+                self.log('makeChannelList playlist channel')
                 if FileAccess.copy(setting1, MADE_CHAN_LOC + os.path.split(setting1)[1]) == False:
                     if FileAccess.exists(MADE_CHAN_LOC + os.path.split(setting1)[1]) == False:
                         self.log("Unable to copy or find playlist " + setting1)
@@ -512,6 +516,7 @@ class ChannelList:
 
                 fle = MADE_CHAN_LOC + os.path.split(setting1)[1]
             else:
+                #not a playlist, so get(?) the playlist from the xps
                 fle = self.makeTypePlaylist(chtype, setting1, setting2)
                 
             fle = uni(fle)
@@ -1085,7 +1090,7 @@ class ChannelList:
 
 
     def buildFileList(self, dir_name, channel, chtype):
-        self.log("buildFileList")
+        self.log("buildFileList dir_name: " + str(dir_name))
         fileList = []
         seasoneplist = []
         filecount = 0

@@ -27,8 +27,10 @@
 		<setting type="sep"/>
 		<setting id="ShowChannelBug" type="bool" label="30006" default="false"/>
         <setting id="ChannelBugPosition" type="enum" subsetting="true" label="30048" visible="eq(-1,true)" lvalues="30117|30118|30119|30120|30231|30232|30233|30234" default="2"/>
-		<setting id="ColorBug" type="bool" subsetting="true" label="30210" visible="eq(-2,true)" default="false"/>
-		<setting id="BugBrightness" type="enum" subsetting="true" label="30208" values=".25|.5|.75|1 (Unchanged)|1.25|1.5|1.75|2|2.25|2.5|2.75|3" default="7" visible="eq(-3,true)"/>
+		<setting id="SecondaryBugChannels" type="text" label="30238" visible="eq(-2,true)" default=""/>
+		<setting id="SecondaryBugPosition" type="enum" subsetting="true" label="30239" visible="eq(-3,true)" lvalues="30117|30118|30119|30120|30231|30232|30233|30234" default="6"/>
+		<setting id="ColorBug" type="bool" subsetting="true" label="30210" visible="eq(-4,true)" default="false"/>
+		<setting id="BugBrightness" type="enum" subsetting="true" label="30208" values=".25|.5|.75|1 (Unchanged)|1.25|1.5|1.75|2|2.25|2.5|2.75|3" default="7" visible="eq(-5,true)"/>
 		<setting type="sep"/>
 		<setting id="ClockMode" type="enum" label="30014" default="0" lvalues="30121|30122"/>
 		<setting type="sep"/>

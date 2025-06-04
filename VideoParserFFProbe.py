@@ -33,8 +33,6 @@ class VideoParserFFProbe:
 
 
     def determineLength(self, filename):
-        
-        
         if os.name == "nt":
           
             result = subprocess.run(["ffprobe", "-v", "quiet", "-show_entries",

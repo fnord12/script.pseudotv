@@ -124,6 +124,7 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
         self.HideDirectoryTitle = ADDON.getSetting('HideDirectoryTitle').split(",")
         self.longBlockChannel = ADDON.getSetting('longBlockChannel').split(",")
         self.ExcludeFromReset = ADDON.getSetting('ExcludeFromReset').split(",")
+        self.SecondaryBugChannels = ADDON.getSetting('SecondaryBugChannels').split(",")
 
         self.toggles = [
             ["altcolorchannels1", self.altcolorchannels1], 
@@ -135,7 +136,8 @@ class ConfigWindow(xbmcgui.WindowXMLDialog):
             ["UseEpisodeTitleKeepShowTitle", self.UseEpisodeTitleKeepShowTitle], 
             ["HideDirectoryTitle", self.HideDirectoryTitle], 
             ["longBlockChannel", self.longBlockChannel],
-            ["ExcludeFromReset", self.ExcludeFromReset]
+            ["ExcludeFromReset", self.ExcludeFromReset],
+            ["SecondaryBugChannels", self.SecondaryBugChannels]
         ]
         
         self.toggleLen = len(self.toggles)

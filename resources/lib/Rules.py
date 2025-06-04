@@ -501,7 +501,7 @@ class NoShowRule(BaseRule):
         
     def sendJSON(self, command):
         data = xbmc.executeJSONRPC(command)
-        return unicode(data, 'utf-8', errors='ignore')
+        return data
 
 class ScheduleChannelRule(BaseRule):
     def __init__(self):
