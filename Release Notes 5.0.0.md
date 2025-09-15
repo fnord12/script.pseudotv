@@ -19,7 +19,7 @@ I've found you have to reboot your computer after following the above instructio
 
 After finding a duration for a video using this method, PseudoTV will now write the duration to file, which will mean that next time it shouldn't have to use FFMPEG for that video and it will be able to load faster.   So the first time or maybe first few times you run PseudoTV it may take a little longer to start but it should be much faster after most of your videos have already been checked.
 
-If you choose to not install FFMPEG it you should still be able to run PseudoTV but any videos without proper durations in Kodi will be skipped.   You still have the option to default such videos to a specified length - see the Settings>Performance tab.  The downside of this is that your EPG and the upcoming schedule may not be accurate if the default length is very different than the atualy video lengths (it's not catastrophic; it just means that the wrong show may load when clicking on the EPG).
+If you choose to not install FFMPEG it you should still be able to run PseudoTV but any videos without proper durations in Kodi will be skipped.   You still have the option to default such videos to a specified length - see the Settings>Performance tab.  The downside of this is that your EPG and the upcoming schedule may not be accurate if the default length is very different than the actual video lengths (it's not catastrophic; it just means that the wrong show may load when clicking on the EPG).
 
 ### Other minor updates
 
