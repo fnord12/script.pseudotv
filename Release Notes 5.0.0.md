@@ -9,7 +9,7 @@ Users on version 4.x/Kodi 18 should be able to back-up their current PseudoTV us
 
 ### File Lengths
 
-The problem: A lot of videos floating around have improper headers or other slight problems.  The videoes are usually playable but Kodi does not get their length on the first pass (when the video is first imported).   Kodi usually correctly gets their lengths on a second pass (when the video is first visible in a skin), but that duration data is not stored in a place where PseudoTV can get them from a JSON query.  YOU PROBABLY HAVE MORE VIDEOS IN YOUR LIBRARY LIKE THIS THAN YOU REALIZE.  PseudoTV needs the correct video length in order to properly schedule the shows and display them on the EPG.  Additionally there are Directory channels which contain videos that Kodi doesn't have in the database.
+The problem: A lot of videos floating around have improper headers or other slight problems.  The videos are usually playable but Kodi does not get their length on the first pass (when the video is first imported).   Kodi usually correctly gets their lengths on a second pass (when the video is first visible in a skin), but that duration data is not stored in a place where PseudoTV can get them from a JSON query.  YOU PROBABLY HAVE MORE VIDEOS IN YOUR LIBRARY LIKE THIS THAN YOU REALIZE.  PseudoTV needs the correct video length in order to properly schedule the shows and display them on the EPG.  Additionally there are Directory channels which contain videos that Kodi doesn't have in the database.
 
 PseudoTV used to try to manually check the video lengths but it could only do so for certain file formats / codecs and increasingly it wasn't working anymore.  Plus it was slow to have to recheck those lengths every time.
 
