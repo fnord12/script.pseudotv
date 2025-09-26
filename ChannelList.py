@@ -300,7 +300,7 @@ class ChannelList:
                 playlist_path = xbmcvfs.translatePath(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u')
                 # Check if the file exists before trying to delete it
                 if os.path.exists(playlist_path):
-                os.remove(playlist_path)
+                    os.remove(playlist_path)
                 
                 #except:
                 #    self.log('SETUPCHANNEL Exception trying to remove channel ' + str(channel))
