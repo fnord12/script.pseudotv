@@ -241,7 +241,10 @@ class ChannelList:
         
         if FileAccess.exists(CHANNELS_LOC + 'channel_' + str(channel) + '.m3u') and append == False and needsreset == False:
             #try:
-                self.channels[channel - 1].totalTimePlayed = int(float(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True)))
+                if ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True):
+                    self.channels[channel - 1].totalTimePlayed = int(float(ADDON_SETTINGS.getSetting('Channel_' + str(channel) + '_time', True)))
+                else:
+                    self.channels[channel - 1].totalTimePlayed = 0
                 createlist = True
                 self.log('SETUPCHANNEL createlist set to True')
                 if self.background == False:
