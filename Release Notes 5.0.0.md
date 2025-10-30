@@ -9,7 +9,7 @@ Users on version 4.x/Kodi 18 should be able to back-up their current PseudoTV us
 
 ### File Lengths
 
-The problem: A lot of videos floating around have improper headers or other slight problems.  The videoes are usually playable but Kodi does not get their length on the first pass (when the video is first imported).   Kodi usually correctly gets their lengths on a second pass (when the video is first visible in a skin), but that duration data is not stored in a place where PseudoTV can get them from a JSON query.  YOU PROBABLY HAVE MORE VIDEOS IN YOUR LIBRARY LIKE THIS THAN YOU REALIZE.  PseudoTV needs the correct video length in order to properly schedule the shows and display them on the EPG.  Additionally there are Directory channels which contain videos that Kodi doesn't have in the database.
+The problem: A lot of videos floating around have improper headers or other slight problems.  The videos are usually playable but Kodi does not get their length on the first pass (when the video is first imported).   Kodi usually correctly gets their lengths on a second pass (when the video is first visible in a skin), but that duration data is not stored in a place where PseudoTV can get them from a JSON query.  YOU PROBABLY HAVE MORE VIDEOS IN YOUR LIBRARY LIKE THIS THAN YOU REALIZE.  PseudoTV needs the correct video length in order to properly schedule the shows and display them on the EPG.  Additionally there are Directory channels which contain videos that Kodi doesn't have in the database.
 
 PseudoTV used to try to manually check the video lengths but it could only do so for certain file formats / codecs and increasingly it wasn't working anymore.  Plus it was slow to have to recheck those lengths every time.
 
@@ -19,7 +19,7 @@ I've found you have to reboot your computer after following the above instructio
 
 After finding a duration for a video using this method, PseudoTV will now write the duration to file, which will mean that next time it shouldn't have to use FFMPEG for that video and it will be able to load faster.   So the first time or maybe first few times you run PseudoTV it may take a little longer to start but it should be much faster after most of your videos have already been checked.
 
-If you choose to not install FFMPEG it you should still be able to run PseudoTV but any videos without proper durations in Kodi will be skipped.   You still have the option to default such videos to a specified length - see the Settings>Performance tab.  The downside of this is that your EPG and the upcoming schedule may not be accurate if the default length is very different than the atualy video lengths (it's not catastrophic; it just means that the wrong show may load when clicking on the EPG).
+If you choose to not install FFMPEG it you should still be able to run PseudoTV but any videos without proper durations in Kodi will be skipped.   You still have the option to default such videos to a specified length - see the Settings>Performance tab.  The downside of this is that your EPG and the upcoming schedule may not be accurate if the default length is very different than the actual video lengths (it's not catastrophic; it just means that the wrong show may load when clicking on the EPG).
 
 ### Other minor updates
 

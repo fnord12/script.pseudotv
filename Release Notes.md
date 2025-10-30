@@ -5,6 +5,13 @@ PseudoTV Classic - fnord12 branch
 
 This document briefly lists the new features in each release since i - fnord12 - forked PseudoTV from Steveb's branch.  Please note that there are individual Release Notes for each release that discuss the features in much more detail.  When a feature in an earlier release has been superceded by a feature in a later release, the earlier feature won't be listed.
 
+### 5.0.2
+* Fixes to add check for existing playlist file before attempting delete (#48).  Thanks Coltin-dev and guythnick! 
+
+### 5.0.1
+*  fixes around FFProbe usage (#47)
+*  fixes around channel resets (#46)
+
 ### 5.0.0
 * Rewritten in Python 3 and made compatible with Kodi 21 Omega.
 * Updated file length checking - requires FFMPEG.
